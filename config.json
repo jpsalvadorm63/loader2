@@ -1,0 +1,11 @@
+{
+  "db": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "juan",
+    "password": "secreta123",
+    "name": "mi_base"
+  },
+  "apiUrl": "https://api.ejemplo.com",
+  "type": "module"
+}
