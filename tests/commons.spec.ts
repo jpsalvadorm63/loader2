@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import dayjs from "dayjs";
-import {str2dayjs} from "../src/commons.js";
-import {DATE_TIME_FORMAT} from "../src/constants.js";
+import {str2dayjs, timeFrame} from "../src/commons.js";
+import {DATE_TIME_FORMAT, max_anios, max_dias, max_horas, max_meses} from "../src/constants.js";
 
 dayjs.extend(customParseFormat);
 
@@ -22,4 +22,46 @@ describe('str2dayjs', () => {
         expect(() => str2dayjs('invalid'))
             .toThrow(`--from debe coincidir con el formato ${DATE_TIME_FORMAT}`);
     });
+});
+
+describe('timeFrame', () => {
+    it('Time frame válido', () => {
+        expect(() => timeFrame('invalid'))
+            .toThrow('Formato para expresión de tiempo no válido');
+    });
+
+    it('Time frame válido para años', () => {
+        expect(() => timeFrame(`${max_anios + 2}a`))
+            .toThrow(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
+
+        const result = timeFrame(`${max_anios -1}a`);
+        expect(result.number).toBe(max_anios -1);
+    });
+
+    it('Time frame válido para meses', () => {
+        expect(() => timeFrame(`${max_meses + 2}m`))
+            .toThrow(`Si especifica las unidades como m (mes), número debe ser máximo ${max_meses}`);
+
+        const result = timeFrame(`${max_meses - 1}m`);
+        expect(result.number).toBe(max_meses - 1);
+    });
+
+    it('Time frame válido para días', () => {
+        expect(() => timeFrame(`${max_dias + 2}d`))
+            .toThrow(`Si especifica las unidades como d (días), número debe ser máximo ${max_dias}`);
+
+        const result = timeFrame(`${max_dias - 1}d`);
+        expect(result.number).toBe(max_dias - 1);
+    });
+
+    it('Time frame válido para horas', () => {
+        expect(() => timeFrame(`-${max_horas + 4}h`))
+            .toThrow(`Si especifica las unidades como h (horas), número debe ser máximo ${max_horas}`);
+
+        const result = timeFrame(`-${max_horas - 1}h`);
+        expect(result.number).toBe(max_horas - 1);
+    });
+
+
+
 });

@@ -5,5 +5,10 @@
  */
 export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 
-export const h001 = '1h'
-export const h002 = '2h
+export const max_horas = 24
+
+export const max_dias = 6
+
+export const max_meses = 12
+
+export const max_anios = 2
