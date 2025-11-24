@@ -62,6 +62,4 @@ describe('timeFrame', () => {
         expect(result.number).toBe(max_horas - 1);
     });
 
-
-
 });
