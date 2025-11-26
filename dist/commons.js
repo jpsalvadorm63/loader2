@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { DATE_TIME_FORMAT, max_anios, max_dias, max_horas, max_meses } from "./constants.js";
+import { DATE_TIME_FORMAT, max_anios, max_meses, max_dias, max_horas } from "./constants.js";
 /**
  * Convierte una cadena de texto en formato fecha/hora a un formato estandarizado
  *
@@ -36,10 +36,10 @@ export const str2dayjs = (value) => {
  * timeFrame('1a')    // retorna { sign: '-', number: 1, unit: 'a' }
  *
  * Unidades permitidas:
- * h: horas (máximo 24)
- * d: días (máximo 6)
- * m: meses (máximo 12)
- * a: años (máximo 2)
+ * h: horas (máximo ${max_horas})
+ * d: días (máximo ${max_dias})
+ * m: meses (máximo ${max_meses})
+ * a: años (máximo {max_nios})
  */
 export const timeFrame = (value) => {
     // ^([+-])?   → optional sign (+ or -) default -
@@ -66,4 +66,42 @@ export const timeFrame = (value) => {
         throw new Error(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
     }
     return { sign, number, unit };
+};
+export const computeDates = (dateTime, te) => {
+    const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
+    if (!parsed.isValid()) {
+        throw new Error(`computeDates(), ${dateTime} no coincide con el formato ${DATE_TIME_FORMAT}`);
+    }
+    let unit;
+    switch (te.unit) {
+        case 'h':
+            unit = 'hour';
+            break;
+        case 'd':
+            unit = 'day';
+            break;
+        case 'm':
+            unit = 'month';
+            break;
+        case 'a':
+            unit = 'year';
+            break;
+        default: throw new Error(`Unidad desconocida: ${te.unit}`);
+    }
+    const targetDate = te.sign === '+'
+        ? parsed.add(te.number, unit)
+        : parsed.subtract(te.number, unit);
+    const startDate = parsed.isBefore(targetDate) ? parsed : targetDate;
+    const endDate = parsed.isBefore(targetDate) ? targetDate : parsed;
+    const totalMinutes = endDate.diff(startDate, 'minute');
+    const daysBetween = Math.floor(totalMinutes / 1440);
+    const hoursBetween = Math.floor((totalMinutes % 1440) / 60);
+    const minutesBetween = totalMinutes % 60;
+    return {
+        start: startDate.format(DATE_TIME_FORMAT),
+        end: endDate.format(DATE_TIME_FORMAT),
+        daysBetween,
+        hoursBetween,
+        minutesBetween
+    };
 };

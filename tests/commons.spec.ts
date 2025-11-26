@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import dayjs from "dayjs";
-import {str2dayjs, timeFrame} from "../src/commons.js";
-import {DATE_TIME_FORMAT, max_anios, max_dias, max_horas, max_meses} from "../src/constants.js";
+import {computeDates, str2dayjs, TimeExpression, timeFrame} from "../src/commons.js";
+import { DATE_TIME_FORMAT, max_anios, max_dias, max_horas, max_meses } from "../src/constants.js";
 
 dayjs.extend(customParseFormat);
 
@@ -34,8 +34,8 @@ describe('timeFrame', () => {
         expect(() => timeFrame(`${max_anios + 2}a`))
             .toThrow(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
 
-        const result = timeFrame(`${max_anios -1}a`);
-        expect(result.number).toBe(max_anios -1);
+        const result = timeFrame(`${max_anios - 1}a`);
+        expect(result.number).toBe(max_anios - 1);
     });
 
     it('Time frame válido para meses', () => {
@@ -60,6 +60,28 @@ describe('timeFrame', () => {
 
         const result = timeFrame(`-${max_horas - 1}h`);
         expect(result.number).toBe(max_horas - 1);
+    });
+
+    it('computeDates 1', () => {
+        const result = computeDates('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 1, unit: 'h' });
+        expect(result).toEqual({
+            start: '2025-11-19T13:30',
+            end: '2025-11-19T14:30',
+            daysBetween: 0,
+            hoursBetween: 1,
+            minutesBetween: 0
+        });
+    });
+
+    it('computeDates 1', () => {
+        const result = computeDates('2005-11-19T14:30', <TimeExpression>{ sign: '-', number: 1, unit: 'a' });
+        expect(result).toEqual({
+            start: '2004-11-19T14:30',
+            end: '2005-11-19T14:30',
+            daysBetween: 365,
+            hoursBetween: 0,
+            minutesBetween: 0
+        });
     });
 
 });

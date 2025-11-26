@@ -1,26 +1,33 @@
 import dayjs from "dayjs";
-import {DATE_TIME_FORMAT, max_anios, max_dias, max_horas, max_meses} from "./constants.js";
+import {
+    DATE_TIME_FORMAT,
+    max_anios,
+    max_meses,
+    max_dias,
+    max_horas
+} from "./constants.js";
 
 
 /**
  * Interfaz que representa una expresión de tiempo con un signo, un número y una unidad.
  * Se utiliza para especificar intervalos de tiempo relativos.
  *
- * sign - Signo que indica si el intervalo es hacia adelante (+) o hacia atrás (-) en el tiempo
+ * sign - Signo que indica si el intervalo de tiempo es hacia adelante (+) o hacia atrás (-)
  *
- * number - Cantidad numérica que especifica el intervalo de tiempo
+ * number - Intervalo de tiempo
  *
- * unit - Unidad de tiempo que se aplica al número:
- * - h: horas (máximo 24)
- * - d: días (máximo 6)
- * - m: meses (máximo 12)
- * - a: años (máximo 2)
+ * unit - Unidad de tiempo que se aplica al intervalo de tiempo:
+ * - h: horas (máximo ${max_horas})
+ * - d: días (máximo ${max_dias})
+ * - m: meses (máximo ${max_meses})
+ * - a: años (máximo ${max_anios})
  */
-interface TimeExpression {
+export interface TimeExpression {
     sign: '+' | '-';
     number: number;
     unit: string;
 }
+
 
 /**
  * Convierte una cadena de texto en formato fecha/hora a un formato estandarizado
@@ -43,6 +50,7 @@ export const str2dayjs = (value: string): string => {
         return parsed.format(DATE_TIME_FORMAT);
 };
 
+
 /**
  * Analiza una cadena de texto que representa una expresión de tiempo y la convierte en un objeto estructurado.
  * El valor predeterminado es '-3h' que significa 3 horas antes.
@@ -58,10 +66,10 @@ export const str2dayjs = (value: string): string => {
  * timeFrame('1a')    // retorna { sign: '-', number: 1, unit: 'a' }
  *
  * Unidades permitidas:
- * h: horas (máximo 24)
- * d: días (máximo 6)
- * m: meses (máximo 12)
- * a: años (máximo 2)
+ * h: horas (máximo ${max_horas})
+ * d: días (máximo ${max_dias})
+ * m: meses (máximo ${max_meses})
+ * a: años (máximo {max_nios})
  */
 export const timeFrame = (value: string): TimeExpression => {
     // ^([+-])?   → optional sign (+ or -) default -
@@ -78,25 +86,67 @@ export const timeFrame = (value: string): TimeExpression => {
     const number = parseInt(match[2] || "3", 10);
     const unit = match[3] || "h";
 
-    if(unit === "h" && number > max_horas) {
+    if (unit === "h" && number > max_horas) {
         throw new Error(`Si especifica las unidades como h (horas), número debe ser máximo ${max_horas}`);
     }
 
-    if(unit === "d" && number > 6) {
+    if (unit === "d" && number > 6) {
         throw new Error(`Si especifica las unidades como d (días), número debe ser máximo ${max_dias}`);
     }
 
-    if(unit === "m" && number > max_meses) {
+    if (unit === "m" && number > max_meses) {
         throw new Error(`Si especifica las unidades como m (mes), número debe ser máximo ${max_meses}`);
     }
 
-    if(unit === "a" && number > max_anios) {
+    if (unit === "a" && number > max_anios) {
         throw new Error(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
     }
 
-    return <TimeExpression>{sign, number, unit};
+    return <TimeExpression>{ sign, number, unit };
 }
 
 
+export interface TimeInterval {
+    start: string
+    end: string
+    daysBetween: number
+    hoursBetween: number
+    minutesBetween: number
+}
 
 
+export const computeDates = (dateTime: string, te: TimeExpression) : TimeInterval => {
+    const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
+    if (!parsed.isValid()) {
+        throw new Error(`computeDates(), ${dateTime} no coincide con el formato ${DATE_TIME_FORMAT}`);
+    }
+
+    let unit: 'hour' | 'day' | 'month' | 'year';
+    switch (te.unit) {
+        case 'h': unit = 'hour'; break;
+        case 'd': unit = 'day'; break;
+        case 'm': unit = 'month'; break;
+        case 'a': unit = 'year'; break;
+        default: throw new Error(`Unidad desconocida: ${te.unit}`);
+    }
+
+    const targetDate = te.sign === '+'
+        ? parsed.add(te.number, unit)
+        : parsed.subtract(te.number, unit);
+
+    const startDate = parsed.isBefore(targetDate) ? parsed : targetDate;
+    const endDate = parsed.isBefore(targetDate) ? targetDate : parsed;
+
+    const totalMinutes = endDate.diff(startDate, 'minute');
+    const daysBetween = Math.floor(totalMinutes / 1440);
+    const hoursBetween = Math.floor((totalMinutes % 1440) / 60);
+    const minutesBetween = totalMinutes % 60;
+
+    return {
+        start: startDate.format(DATE_TIME_FORMAT),
+        end: endDate.format(DATE_TIME_FORMAT),
+        daysBetween,
+        hoursBetween,
+        minutesBetween
+    };
+}
