@@ -213,7 +213,7 @@ export const config = JSON.parse(raw);
 ### 🧠 Correr el CLI en modo de desarrollo
 
 - Usa `npm run build:auto` para reconstruir el sistema ante cualquier cambio
-- Usa `npx vites` para correr las pruebas ante cualquier cambio
+- Usa `npx vites --no-silent` para correr las pruebas ante cualquier cambio
 - Usa `node dist/index.js fromAirVisio --from=2025-11-19T21:59` para probar el sistema en línea
 
 ### 🧠 Correr el CLI en modo de desarrollo
