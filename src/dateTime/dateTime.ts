@@ -1,5 +1,20 @@
 import dayjs from "dayjs";
-import { DATE_TIME_FORMAT, max_anios, max_meses, max_dias, max_horas } from "./constants.js";
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import {
+    DATE_TIME_FORMAT,
+    max_anios,
+    max_meses,
+    max_dias,
+    max_horas
+} from "./dateTime-constants.js";
+import {
+    TimeExpression,
+    TimeInterval,
+    TimeIntervalDiff
+} from "./dateTime.interfaces.js";
+
+dayjs.extend(customParseFormat);
+
 /**
  * Convierte una cadena de texto en formato fecha/hora a un formato estandarizado
  *
@@ -13,14 +28,14 @@ import { DATE_TIME_FORMAT, max_anios, max_meses, max_dias, max_horas } from "./c
  * str2dayjs('2025-11-19T14:60') // retorna error '-F,--from debe coincidir con el formato . . .'
  * str2dayjs('2025-11-19T14:00') // retorna '2025-11-19T14:00'
  */
-export const str2dayjs = (value) => {
+export const str2dayjs = (value: string): string => {
     const parsed = dayjs(value, DATE_TIME_FORMAT, true); // modo estricto
     if (!parsed.isValid()) {
         throw new Error(`-F,--from debe coincidir con el formato ${DATE_TIME_FORMAT}`);
-    }
-    else
+    } else
         return parsed.format(DATE_TIME_FORMAT);
 };
+
 /**
  * Analiza una cadena de texto que representa una expresión de tiempo y la convierte en un objeto estructurado.
  * El valor predeterminado es '-3h' que significa 3 horas antes.
@@ -41,32 +56,40 @@ export const str2dayjs = (value) => {
  * m: meses (máximo ${max_meses})
  * a: años (máximo {max_nios})
  */
-export const timeFrame = (value) => {
+export const timeFrame = (value: string): TimeExpression => {
     // ^([+-])?   → optional sign (+ or -) default -
     // (\d*)      → optional number (0 or more digits) default 3
     // ([hdma])?  → final character (one letter) default h
     const regex = /^([+-])?(\d*)([hdma])?$/;
     const match = value.match(regex);
+
     if (!match) {
         throw new Error('Formato para expresión de tiempo no válido');
     }
+
     const sign = match[1] || "-";
     const number = parseInt(match[2] || "3", 10);
     const unit = match[3] || "h";
+
     if (unit === "h" && number > max_horas) {
         throw new Error(`Si especifica las unidades como h (horas), número debe ser máximo ${max_horas}`);
     }
+
     if (unit === "d" && number > max_dias) {
         throw new Error(`Si especifica las unidades como d (días), número debe ser máximo ${max_dias}`);
     }
+
     if (unit === "m" && number > max_meses) {
         throw new Error(`Si especifica las unidades como m (mes), número debe ser máximo ${max_meses}`);
     }
+
     if (unit === "a" && number > max_anios) {
         throw new Error(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
     }
-    return { sign, number, unit };
-};
+
+    return <TimeExpression>{ sign, number, unit };
+}
+
 /**
  * Calcula el intervalo de tiempo resultante de aplicar una expresión de tiempo a una fecha dada.
  *
@@ -76,38 +99,34 @@ export const timeFrame = (value) => {
  * @throws {Error} Si la fecha base no es válida según el formato esperado.
  * @throws {Error} Si la unidad de tiempo en la expresión no es reconocida.
  */
-export const computeTimeInterval = (dateTime, te) => {
+export const computeTimeInterval = (dateTime: string, te: TimeExpression): TimeInterval => {
     const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
     if (!parsed.isValid()) {
         throw new Error(`computeDates(), ${dateTime} no coincide con el formato ${DATE_TIME_FORMAT}`);
     }
-    let unit;
+
+    let unit: 'hour' | 'day' | 'month' | 'year';
     switch (te.unit) {
-        case 'h':
-            unit = 'hour';
-            break;
-        case 'd':
-            unit = 'day';
-            break;
-        case 'm':
-            unit = 'month';
-            break;
-        case 'a':
-            unit = 'year';
-            break;
+        case 'h': unit = 'hour'; break;
+        case 'd': unit = 'day'; break;
+        case 'm': unit = 'month'; break;
+        case 'a': unit = 'year'; break;
         default: throw new Error(`Unidad desconocida: ${te.unit}`);
     }
+
     const targetDate = te.sign === '+'
         ? parsed.add(te.number, unit)
         : parsed.subtract(te.number, unit);
+
     const startDate = parsed.isBefore(targetDate) ? parsed : targetDate;
     const endDate = parsed.isBefore(targetDate) ? targetDate : parsed;
+
     return {
         start: startDate.format(DATE_TIME_FORMAT),
         end: endDate.format(DATE_TIME_FORMAT)
     };
-};
 
+}
 
 /**
  * Calcula la diferencia entre las fechas de inicio y fin de un intervalo de tiempo dado.
@@ -117,37 +136,43 @@ export const computeTimeInterval = (dateTime, te) => {
  * @throws {Error} Si la fecha de inicio del intervalo no es válida.
  * @throws {Error} Si la fecha de fin del intervalo no es válida.
  */
-export const timeIntervalDiff = (interval) => {
+export const timeIntervalDiff = (interval: TimeInterval): TimeIntervalDiff => {
     let startDate = dayjs(interval.start);
     let endDate = dayjs(interval.end);
+
     if (!startDate.isValid()) {
         throw new Error('"start" del intervalo de tiempo no es válido');
     }
+
     if (!endDate.isValid()) {
         throw new Error('"end" del intervalo de tiempo no es válido');
     }
+
     if (startDate.isAfter(endDate)) {
         [startDate, endDate] = [endDate, startDate];
     }
+
     if (!startDate.isValid()) {
         throw new Error('"start" del intervalo de tiempo no es válido');
     }
+
     if (!endDate.isValid()) {
         throw new Error('"end" del intervalo de tiempo no es válido');
     }
+
     let minutesLeft = endDate.diff(startDate, 'minute');
     const days = Math.floor(minutesLeft / 1440);
     minutesLeft -= days * 1440;
     const hours = Math.floor(minutesLeft / 60);
     minutesLeft -= hours * 60;
     const minutes = minutesLeft;
-    return {
+
+    return <TimeIntervalDiff>{
         days,
         hours,
         minutes
     };
-};
-
+}
 
 /**
  * Trunca una fecha y hora dada a la unidad especificada (mes, día, hora o minuto).
@@ -164,27 +189,25 @@ export const timeIntervalDiff = (interval) => {
  * truncDateTime('2023-10-26T14:35', 'hour')  // retorna '2023-10-26T14:00'
  * truncDateTime('2023-10-26T14:35', 'minute') // retorna '2023-10-26T14:35'
  */
-export const truncDateTime = (dateTime, unit) => {
+export const truncDateTime = (dateTime: string, unit: 'month' | 'day' | 'hour' | 'minute'): string => {
     const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
     if (!parsed.isValid()) {
         throw new Error(`truncDateTime(), '${dateTime}' no coincide con el formato ${DATE_TIME_FORMAT}`);
     }
+
     let truncated = parsed;
     if (unit === 'month') {
         truncated = parsed.date(1).hour(0).minute(0).second(0).millisecond(0);
-    }
-    else if (unit === 'day') {
+    } else if (unit === 'day') {
         truncated = parsed.hour(0).minute(0).second(0).millisecond(0);
-    }
-    else if (unit === 'hour') {
+    } else if (unit === 'hour') {
         truncated = parsed.minute(0).second(0).millisecond(0);
-    }
-    else if (unit === 'minute') {
+    } else if (unit === 'minute') {
         truncated = parsed.second(0).millisecond(0);
     }
-    return truncated.format(DATE_TIME_FORMAT);
-};
 
+    return truncated.format(DATE_TIME_FORMAT);
+}
 
 /**
  * Redondea una fecha y hora dada a la unidad especificada (mes, día o hora).
@@ -200,20 +223,20 @@ export const truncDateTime = (dateTime, unit) => {
  * roundDateTime('2023-10-26T14:35', 'day')   // retorna '2023-10-26T00:00'
  * roundDateTime('2023-10-26T14:35', 'hour')  // retorna '2023-10-26T15:00'
  */
-export const roundDateTime = (dateTime, unit) => {
+export const roundDateTime = (dateTime: string, unit: 'month' | 'day' | 'hour'): string => {
     const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
     if (!parsed.isValid()) {
         throw new Error(`roundDateTime(), '${dateTime}' no coincide con el formato ${DATE_TIME_FORMAT}`);
     }
+
     let rounded = parsed;
     if (unit === 'month') {
         rounded = parsed.add(1, 'month').date(1).hour(0).minute(0).second(0).millisecond(0);
-    }
-    else if (unit === 'day') {
+    } else if (unit === 'day') {
         rounded = parsed.add(1, 'day').hour(0).minute(0);
-    }
-    else if (unit === 'hour') {
+    } else if (unit === 'hour') {
         rounded = parsed.add(1, 'hour').minute(0);
     }
+
     return rounded.format(DATE_TIME_FORMAT);
-};
+}

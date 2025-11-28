@@ -1,11 +1,35 @@
-import { describe, it, expect } from 'vitest';
-import customParseFormat from 'dayjs/plugin/customParseFormat.js';
-import dayjs from "dayjs";
-import { computeTimeInterval, roundDateTime, str2dayjs, TimeExpression, timeFrame, timeIntervalDiff, truncDateTime } from "../src/dateTime.js";
-import { DATE_TIME_FORMAT, max_anios, max_dias, max_horas, max_meses } from "../src/constants.js";
+import {
+    describe,
+    it,
+    expect
+} from 'vitest';
 
-dayjs.extend(customParseFormat);
+import {
+    DATE_TIME_FORMAT,
+    max_anios,
+    max_dias,
+    max_horas,
+    max_meses,
+    computeTimeInterval,
+    roundDateTime,
+    str2dayjs,
+    timeFrame,
+    timeIntervalDiff,
+    truncDateTime
+    // @ts-ignore
+} from "../src/dateTime";
 
+import type {
+    TimeExpression,
+    TimeInterval,
+    TimeIntervalDiff
+    // @ts-ignore
+} from "../src/dateTime";
+
+/**
+ * Pruebas para la función str2dayjs
+ * Valida la conversión de cadenas de texto a objetos dayjs
+ */
 describe('str2dayjs', () => {
     it('should format valid date string correctly', () => {
         const result = str2dayjs('2025-11-19T14:30');
@@ -24,6 +48,10 @@ describe('str2dayjs', () => {
     });
 });
 
+/**
+ * Pruebas para la función timeFrame
+ * Verifica la validación de expresiones de tiempo y sus límites
+ */
 describe('timeFrame', () => {
     it('Time frame válido', () => {
         expect(() => timeFrame('invalid'))
@@ -64,10 +92,14 @@ describe('timeFrame', () => {
 
 });
 
+/**
+ * Pruebas para la función computeTimeInterval
+ * Verifica el cálculo de intervalos de tiempo con diferentes unidades
+ */
 describe('computeTimeInterval', () => {
     it('computeTimeInterval -1 horas', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 1, unit: 'h' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-19T13:30',
             end: '2025-11-19T14:30',
         });
@@ -75,7 +107,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval +24 horas', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 24, unit: 'h' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-19T14:30',
             end: '2025-11-20T14:30',
         });
@@ -83,7 +115,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval -21 horas', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 21, unit: 'h' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-18T17:30',
             end: '2025-11-19T14:30',
         });
@@ -91,7 +123,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval +24 horas', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 24, unit: 'h' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-19T14:30',
             end: '2025-11-20T14:30',
         });
@@ -99,7 +131,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval +79 horas', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 79, unit: 'h' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-19T14:30',
             end: '2025-11-22T21:30',
         });
@@ -108,7 +140,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval +11 mes', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 11, unit: 'm' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-19T14:30',
             end: '2026-10-19T14:30',
         });
@@ -116,7 +148,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval -11 mes', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 11, unit: 'm' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2024-12-19T14:30',
             end: '2025-11-19T14:30',
         });
@@ -124,7 +156,7 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval +1 año', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 1, unit: 'a' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2025-11-19T14:30',
             end: '2026-11-19T14:30',
         });
@@ -132,14 +164,17 @@ describe('computeTimeInterval', () => {
 
     it('computeTimeInterval -1 año', () => {
         const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 1, unit: 'a' });
-        expect(result).toEqual({
+        expect(result).toEqual(<TimeInterval>{
             start: '2024-11-19T14:30',
             end: '2025-11-19T14:30',
         });
     });
-
 })
 
+/**
+ * Pruebas para la función timeIntervalDiff
+ * Verifica el cálculo de diferencias entre intervalos de tiempo
+ */
 describe('timeIntervalDiff', () => {
     it('timeIntervalDiff should throw error for invalid dates', () => {
         expect(() => timeIntervalDiff({ start: 'invalid', end: '2025-11-20T14:30' }))
@@ -150,8 +185,8 @@ describe('timeIntervalDiff', () => {
     });
 
     it('timeIntervalDiff start < end', () => {
-        const result = timeIntervalDiff({ start: '2025-11-19T14:30', end: '2026-11-20T12:31' });
-        expect(result).toEqual({
+        const result = timeIntervalDiff(<TimeInterval>{ start: '2025-11-19T14:30', end: '2026-11-20T12:31' });
+        expect(result).toEqual(<TimeIntervalDiff>{
             days: 365,
             hours: 22,
             minutes: 1,
@@ -159,8 +194,8 @@ describe('timeIntervalDiff', () => {
     });
 
     it('timeIntervalDiff start > dif', () => {
-        const result = timeIntervalDiff({ start: '2026-11-20T12:31', end: '2025-11-19T14:30' });
-        expect(result).toEqual({
+        const result = timeIntervalDiff(<TimeInterval>{ start: '2026-11-20T12:31', end: '2025-11-19T14:30' });
+        expect(result).toEqual(<TimeIntervalDiff>{
             days: 365,
             hours: 22,
             minutes: 1,
@@ -169,6 +204,10 @@ describe('timeIntervalDiff', () => {
 
 })
 
+/**
+ * Pruebas para la función truncDateTime
+ * Verifica el truncamiento de fechas a diferentes unidades de tiempo
+ */
 describe('truncDateTime invalid date', () => {
     it('truncDateTime should throw error for invalid date', () => {
         expect(() => truncDateTime('invalid', 'day'))
@@ -196,6 +235,10 @@ describe('truncDateTime invalid date', () => {
     });
 })
 
+/**
+ * Pruebas para la función roundDateTime
+ * Verifica el redondeo de fechas a diferentes unidades de tiempo
+ */
 describe('roundDateTime', () => {
     it('roundDateTime invalid date', () => {
         expect(() => roundDateTime('invalid', 'day'))
