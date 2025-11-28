@@ -2,8 +2,8 @@
 import dayjs from 'dayjs';
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { Command } from "commander";
-import { str2dayjs } from "./dateTime/dateTime.js";
-import { DATE_TIME_FORMAT } from "./dateTime/dateTime-constants.js";
+import { str2dayjs } from "./dateTime/index.js";
+import { DATE_TIME_FORMAT } from "./dateTime/index.js";
 
 dayjs.locale('es');
 
