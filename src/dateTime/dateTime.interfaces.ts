@@ -12,7 +12,7 @@
  * - m: meses (máximo ${max_meses})
  * - a: años (máximo ${max_anios})
  */
-export interface TimeExpression {
+export interface ITimeExpression {
     sign: '+' | '-';
     number: number;
     unit: string;
@@ -22,7 +22,7 @@ export interface TimeExpression {
  * Interfaz que define un intervalo de tiempo con fecha de inicio y fin. Las fechas están como
  * cadena de caracteres en el formato DATE_TIME_FORMAT.
  */
-export interface TimeInterval {
+export interface ITimeInterval {
     start: string
     end: string
 }
@@ -30,7 +30,7 @@ export interface TimeInterval {
 /**
  * Interfaz que representa la diferencia de tiempo desglosada en días, horas y minutos.
  */
-export interface TimeIntervalDiff {
+export interface ITimeIntervalDiff {
     days: number
     hours: number
     minutes: number

@@ -8,9 +8,9 @@ import {
     max_horas
 } from "./dateTime-constants.js";
 import {
-    TimeExpression,
-    TimeInterval,
-    TimeIntervalDiff
+    ITimeExpression,
+    ITimeInterval,
+    ITimeIntervalDiff
 } from "./dateTime.interfaces.js";
 
 dayjs.extend(customParseFormat);
@@ -19,7 +19,7 @@ dayjs.extend(customParseFormat);
  * Convierte una cadena de texto en formato fecha/hora a un formato estandarizado
  *
  * @param {string} value - Cadena de texto que representa una fecha y hora
- * @returns {string} Fecha y hora formateada según el formato DATE_TIME_FORMAT
+ * @returns {string} Fecha y hora en formato ${DATE_TIME_FORMAT}
  * @throws {Error} Si el formato de la fecha de entrada no coincide con DATE_TIME_FORMAT
  *
  * @example
@@ -41,7 +41,7 @@ export const str2dayjs = (value: string): string => {
  * El valor predeterminado es '-3h' que significa 3 horas antes.
  *
  * @param {string} value - Cadena de texto que representa una expresión de tiempo (ej., "+1h", "-3d", "2m")
- * @returns {TimeExpression} Objeto que contiene el signo (antes o después), número (el tiempo) y unidad de tiempo (h horas, d días, m meses, a años)
+ * @returns {ITimeExpression} Objeto que contiene el signo (antes o después), número (el tiempo) y unidad de tiempo (h horas, d días, m meses, a años)
  * @throws {Error} Si el formato de la expresión no es válido o si los valores exceden los límites permitidos
  *
  * @example
@@ -56,7 +56,7 @@ export const str2dayjs = (value: string): string => {
  * m: meses (máximo ${max_meses})
  * a: años (máximo {max_nios})
  */
-export const timeFrame = (value: string): TimeExpression => {
+export const timeFrame = (value: string): ITimeExpression => {
     // ^([+-])?   → optional sign (+ or -) default -
     // (\d*)      → optional number (0 or more digits) default 3
     // ([hdma])?  → final character (one letter) default h
@@ -87,19 +87,19 @@ export const timeFrame = (value: string): TimeExpression => {
         throw new Error(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
     }
 
-    return <TimeExpression>{ sign, number, unit };
+    return <ITimeExpression>{ sign, number, unit };
 }
 
 /**
  * Calcula el intervalo de tiempo resultante de aplicar una expresión de tiempo a una fecha dada.
  *
  * @param {string} dateTime - La fecha y hora base en formato string.
- * @param {TimeExpression} te - La expresión de tiempo que contiene la cantidad, unidad y dirección (signo) a aplicar.
- * @returns {TimeInterval} Un objeto que contiene la fecha de inicio y fin del intervalo calculado.
+ * @param {ITimeExpression} te - La expresión de tiempo que contiene la cantidad, unidad y dirección (signo) a aplicar.
+ * @returns {ITimeInterval} Un objeto que contiene la fecha de inicio y fin del intervalo calculado.
  * @throws {Error} Si la fecha base no es válida según el formato esperado.
  * @throws {Error} Si la unidad de tiempo en la expresión no es reconocida.
  */
-export const computeTimeInterval = (dateTime: string, te: TimeExpression): TimeInterval => {
+export const computeTimeInterval = (dateTime: string, te: ITimeExpression): ITimeInterval => {
     const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
     if (!parsed.isValid()) {
         throw new Error(`computeDates(), ${dateTime} no coincide con el formato ${DATE_TIME_FORMAT}`);
@@ -131,12 +131,12 @@ export const computeTimeInterval = (dateTime: string, te: TimeExpression): TimeI
 /**
  * Calcula la diferencia entre las fechas de inicio y fin de un intervalo de tiempo dado.
  *
- * @param {TimeInterval} interval - El objeto de intervalo de tiempo que contiene las fechas de inicio y fin.
- * @returns {TimeIntervalDiff} Un objeto que representa la diferencia entre las fechas del intervalo.
+ * @param {ITimeInterval} interval - El objeto de intervalo de tiempo que contiene las fechas de inicio y fin.
+ * @returns {ITimeIntervalDiff} Un objeto que representa la diferencia entre las fechas del intervalo.
  * @throws {Error} Si la fecha de inicio del intervalo no es válida.
  * @throws {Error} Si la fecha de fin del intervalo no es válida.
  */
-export const timeIntervalDiff = (interval: TimeInterval): TimeIntervalDiff => {
+export const timeIntervalDiff = (interval: ITimeInterval): ITimeIntervalDiff => {
     let startDate = dayjs(interval.start);
     let endDate = dayjs(interval.end);
 
@@ -167,7 +167,7 @@ export const timeIntervalDiff = (interval: TimeInterval): TimeIntervalDiff => {
     minutesLeft -= hours * 60;
     const minutes = minutesLeft;
 
-    return <TimeIntervalDiff>{
+    return <ITimeIntervalDiff>{
         days,
         hours,
         minutes

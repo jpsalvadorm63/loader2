@@ -39,7 +39,7 @@ export {
  * - TimeIntervalDiff: Diferencia de tiempo en días, horas y minutos
  */
 export type {
-    TimeExpression,
-    TimeInterval,
-    TimeIntervalDiff
+    ITimeExpression,
+    ITimeInterval,
+    ITimeIntervalDiff
 } from './dateTime.interfaces.js';

@@ -20,9 +20,9 @@ import {
 } from "../src/dateTime";
 
 import type {
-    TimeExpression,
-    TimeInterval,
-    TimeIntervalDiff
+    ITimeExpression,
+    ITimeInterval,
+    ITimeIntervalDiff
     // @ts-ignore
 } from "../src/dateTime";
 
@@ -98,40 +98,40 @@ describe('timeFrame', () => {
  */
 describe('computeTimeInterval', () => {
     it('computeTimeInterval -1 horas', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 1, unit: 'h' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '-', number: 1, unit: 'h' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-19T13:30',
             end: '2025-11-19T14:30',
         });
     });
 
     it('computeTimeInterval +24 horas', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 24, unit: 'h' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '+', number: 24, unit: 'h' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-19T14:30',
             end: '2025-11-20T14:30',
         });
     });
 
     it('computeTimeInterval -21 horas', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 21, unit: 'h' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '-', number: 21, unit: 'h' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-18T17:30',
             end: '2025-11-19T14:30',
         });
     });
 
     it('computeTimeInterval +24 horas', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 24, unit: 'h' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '+', number: 24, unit: 'h' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-19T14:30',
             end: '2025-11-20T14:30',
         });
     });
 
     it('computeTimeInterval +79 horas', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 79, unit: 'h' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '+', number: 79, unit: 'h' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-19T14:30',
             end: '2025-11-22T21:30',
         });
@@ -139,32 +139,32 @@ describe('computeTimeInterval', () => {
 
 
     it('computeTimeInterval +11 mes', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 11, unit: 'm' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '+', number: 11, unit: 'm' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-19T14:30',
             end: '2026-10-19T14:30',
         });
     });
 
     it('computeTimeInterval -11 mes', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 11, unit: 'm' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '-', number: 11, unit: 'm' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2024-12-19T14:30',
             end: '2025-11-19T14:30',
         });
     });
 
     it('computeTimeInterval +1 año', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '+', number: 1, unit: 'a' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '+', number: 1, unit: 'a' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2025-11-19T14:30',
             end: '2026-11-19T14:30',
         });
     });
 
     it('computeTimeInterval -1 año', () => {
-        const result = computeTimeInterval('2025-11-19T14:30', <TimeExpression>{ sign: '-', number: 1, unit: 'a' });
-        expect(result).toEqual(<TimeInterval>{
+        const result = computeTimeInterval('2025-11-19T14:30', <ITimeExpression>{ sign: '-', number: 1, unit: 'a' });
+        expect(result).toEqual(<ITimeInterval>{
             start: '2024-11-19T14:30',
             end: '2025-11-19T14:30',
         });
@@ -185,8 +185,8 @@ describe('timeIntervalDiff', () => {
     });
 
     it('timeIntervalDiff start < end', () => {
-        const result = timeIntervalDiff(<TimeInterval>{ start: '2025-11-19T14:30', end: '2026-11-20T12:31' });
-        expect(result).toEqual(<TimeIntervalDiff>{
+        const result = timeIntervalDiff(<ITimeInterval>{ start: '2025-11-19T14:30', end: '2026-11-20T12:31' });
+        expect(result).toEqual(<ITimeIntervalDiff>{
             days: 365,
             hours: 22,
             minutes: 1,
@@ -194,8 +194,8 @@ describe('timeIntervalDiff', () => {
     });
 
     it('timeIntervalDiff start > dif', () => {
-        const result = timeIntervalDiff(<TimeInterval>{ start: '2026-11-20T12:31', end: '2025-11-19T14:30' });
-        expect(result).toEqual(<TimeIntervalDiff>{
+        const result = timeIntervalDiff(<ITimeInterval>{ start: '2026-11-20T12:31', end: '2025-11-19T14:30' });
+        expect(result).toEqual(<ITimeIntervalDiff>{
             days: 365,
             hours: 22,
             minutes: 1,

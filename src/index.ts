@@ -4,6 +4,10 @@ import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import { Command } from "commander";
 import { str2dayjs } from "./dateTime/index.js";
 import { DATE_TIME_FORMAT } from "./dateTime/index.js";
+import {
+    magnitudesHelp
+} from "./parameters/index.js";
+import {wait} from "./commons/index.js";
 
 dayjs.locale('es');
 
@@ -27,8 +31,24 @@ program
         str2dayjs,
         formatNow()
     )
+    // .option(
+    //     '-M,--magnitudes <magnitudes>',
+    //     `magnitudes válidas, una o mas entre "${validMagnitudes()}"`,
+    //     (magnitudes) => reviewMagnitudes(magnitudes)
+    // )
     .action((options: { from: string }) => {
         console.log('> ', options.from);
     });
+
+program
+    .command('validParams')
+    .description('Parámetros válidos para comando "airVisio"')
+    .action(async () => {
+        magnitudesHelp()
+        await wait('Presione Enter para continuar, q Q ESC para salir...')
+
+
+
+    })
 
 program.parseAsync();
