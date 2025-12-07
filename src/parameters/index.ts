@@ -12,10 +12,19 @@ export type {
     IOpoint,
 } from "./params.interfaces.js"
 
+export type {
+    TConsoleMessageType,
+    fnConsole,
+    INFO_MESSAGE,
+    WARN_MESSAGE,
+    LOG_MESSAGE,
+    ERROR_MESSAGE
+} from "./commons.js"
+
 export {
     reviewMagnitude,
-    reviewOpoint,
+    // reviewOpoint,
     validMagnitudes,
-    reviewMagnitudes,
+    validateMagnitudes,
     magnitudesHelp,
-} from "./params.js"
+} from "./params.magnitudes.js"
