@@ -9,10 +9,18 @@ import {
 } from "./configs/params.interfaces.js";
 
 import chalk from "chalk";
+
 import Table from "cli-table3";
-import {INFO_MESSAGE, TConsoleMessageType} from "./commons.js";
-import {fnConsole} from "./commons.js";
-import {magnitudesTable, reviewMagnitude} from "./params.magnitudes.js";
+
+import {
+    INFO_MESSAGE,
+    TConsoleMessageType
+} from "./commons.js";
+
+import {
+    fnConsole
+} from "./commons.js";
+
 
 
 /**
@@ -38,10 +46,10 @@ export const validOpoints = (simple: boolean = true) => {
 
 
 /**
- * Verifica si una lista de puntos de observación separados por comas es válida
- * @param opoints - Cadena de puntos de observación separados por comas
- * @returns true si todos los puntos de observación son válidos
- * @throws Error si algún punto de observación no es válido o si no se especifica ninguno
+ * Valida que los puntos de observación especificados sean correctos y existan en la lista de puntos permitidos
+ * @param {string} opoints - Cadena con uno o más códigos de puntos de observación separados por comas, o ALLPARAM para todos
+ * @returns {boolean} true si todos los puntos de observación son válidos
+ * @throws {Error} Si no se especificó ningún punto de observación o si alguno de los puntos no es válido
  */
 export const validateOpoints = (opoints: string): boolean => {
     if (opoints === NONEPARAM) {
@@ -51,7 +59,7 @@ export const validateOpoints = (opoints: string): boolean => {
         return true
     }
     opoints.split(',').forEach((opoint : string) => {
-        if(!reviewMagnitude(opoint)) {
+        if(!reviewOpoint(opoint)) {
             throw new Error(`La magnitud '${opoint}' no es válida. Las estaciones válidas son: ${OPOINTS.map(m => m.airVisio).join(', ')}`);
         }
     })

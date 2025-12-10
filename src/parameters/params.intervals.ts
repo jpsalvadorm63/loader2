@@ -9,20 +9,45 @@ import {
 } from "./configs/params.interfaces.js";
 
 import chalk from "chalk";
-import Table from "cli-table3";
-import {INFO_MESSAGE, TConsoleMessageType} from "./commons.js";
-import {fnConsole} from "./commons.js";
 
+import Table from "cli-table3";
+
+import {
+    INFO_MESSAGE,
+    TConsoleMessageType
+} from "./commons.js";
+
+import {
+    fnConsole
+} from "./commons.js";
+
+
+/**
+ * Verifica si un intervalo dado existe en la lista de intervalos válidos.
+ * @param {string} interval - Código del intervalo a verificar
+ * @returns {boolean} true si el intervalo existe en la lista, false en caso contrario
+ */
 export const reviewInterval = (interval: string): boolean => {
     return IIntervals.some((i : IInterval) => i.interval === interval);
 }
 
+/**
+ * Obtiene la lista de intervalos válidos en formato simple o detallado.
+ * @param {boolean} simple - Si es true, retorna una cadena de códigos separados por comas; si es false, retorna un array de objetos con nombre e interval
+ * @returns {string | Array<{nombre: string, interval: string}>} Lista de intervalos en el formato especificado
+ */
 export const validIntervals = (simple: boolean = true) => {
     return simple
         ? IIntervals.map(i => i.interval).join(', ')
         : IIntervals.map(i => ({nombre: i.nombre, interval: i.interval}));
 }
 
+/**
+ * Valida que un intervalo sea correcto y exista en la lista de intervalos permitidos.
+ * @param {string} interval - Código del intervalo a validar
+ * @returns {boolean} true si el intervalo es válido
+ * @throws {Error} Si no se especificó un intervalo o si el intervalo no es válido
+ */
 export const validateIntervals = (interval: string): boolean => {
     if (interval === NONEPARAM) {
         throw new Error("No se ha especificado un intervalo");
@@ -34,6 +59,10 @@ export const validateIntervals = (interval: string): boolean => {
     return true;
 }
 
+/**
+ * Tabla configurada con formato específico para mostrar información de intervalos.
+ * Incluye encabezados, anchos de columna, caracteres de borde y alineación.
+ */
 const table = new Table({
     head: [
         chalk.bold.black("nombre"),
@@ -49,6 +78,10 @@ const table = new Table({
     colAligns: ["left", "center"] // alineación por columna
 });
 
+/**
+ * Genera una tabla formateada con todos los intervalos disponibles.
+ * @returns {Table} Tabla con los nombres y códigos de intervalos
+ */
 export const intervalTable = () => {
     IIntervals.forEach(i => {
         table.push([i.nombre, chalk.bold.red(i.interval)])
@@ -56,6 +89,10 @@ export const intervalTable = () => {
     return table;
 }
 
+/**
+ * Muestra ayuda en consola sobre los intervalos disponibles y cómo usarlos en la línea de comandos.
+ * @param {TConsoleMessageType} msgType - Tipo de mensaje de consola (por defecto INFO_MESSAGE)
+ */
 export const intervalsHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     myConsole('\n-----')

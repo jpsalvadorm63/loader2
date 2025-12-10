@@ -6,16 +6,16 @@ import {
 
 import {
     IMagnitude,
-    // IOpoint
 } from "./configs/params.interfaces.js";
 
-// export const reviewOpoint = (opoint: string): boolean => {
-//     return OPOINT.some((o : IOpoint) => o.airVisio === opoint);
-// }
-
 import chalk from "chalk";
+
 import Table from "cli-table3";
-import {INFO_MESSAGE, TConsoleMessageType} from "./commons.js";
+
+import {
+    INFO_MESSAGE,
+    TConsoleMessageType
+} from "./commons.js";
 import {fnConsole} from "./commons.js";
 
 
