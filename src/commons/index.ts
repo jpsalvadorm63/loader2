@@ -1,3 +1,1 @@
-export {
-    wait
-} from './keyb.js'
+export {wait} from './keyb.js'

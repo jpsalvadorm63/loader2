@@ -1,8 +1,7 @@
 import {
     ALLPARAM,
-    MAGNITUDES,
     NONEPARAM,
-    // OPOINT
+    MAGNITUDES,
 } from "./params.constants.js";
 
 import {

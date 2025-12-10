@@ -1,18 +1,27 @@
 import readline from "readline";
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+/**
+ * Espera a que el usuario presione Enter para continuar o 'q' para salir
+ * @param {string} waitingMessage - Mensaje a mostrar al usuario (por defecto 'Press Enter to continue or q to quit...')
+ * @returns {Promise<void>} Promesa que se resuelve cuando el usuario presiona Enter o termina el proceso si presiona 'q'
+ */
+export const wait = async (waitingMessage: string = 'Press Enter to continue or q to quit...') =>
+    await new Promise<void>(async resolve => {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
 
-export const wait = async (waitingMessage: string) => await new Promise<void>(resolve => {
-    console.log(waitingMessage)
-    process.stdin.on('keypress', (ch, key) => {
-        if (key.name === 'q' || key.name === 'escape') {
-            rl.close();
+        const answer = await new Promise<string>(resolve => {
+            rl.question(waitingMessage, (input) => {
+                rl.close();
+                resolve(input);
+            });
+        });
+
+        if (answer.toLowerCase() === 'q') {
             process.exit(0);
         }
+
+        resolve();
     });
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-});

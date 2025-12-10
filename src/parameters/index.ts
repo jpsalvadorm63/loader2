@@ -4,7 +4,7 @@ export {
     NONEPARAM,
     ALLPARAM,
     MAGNITUDES,
-    OPOINT,
+    OPOINTS,
 } from "./params.constants.js"
 
 export type {
@@ -23,8 +23,14 @@ export type {
 
 export {
     reviewMagnitude,
-    // reviewOpoint,
     validMagnitudes,
     validateMagnitudes,
     magnitudesHelp,
 } from "./params.magnitudes.js"
+
+export {
+    validOpoints,
+    validateOpoints,
+    reviewOpoint,
+    opointsHelp
+} from "./params.opoints.js"

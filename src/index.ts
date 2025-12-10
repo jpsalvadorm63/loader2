@@ -5,7 +5,8 @@ import { Command } from "commander";
 import { str2dayjs } from "./dateTime/index.js";
 import { DATE_TIME_FORMAT } from "./dateTime/index.js";
 import {
-    magnitudesHelp
+    magnitudesHelp,
+    opointsHelp
 } from "./parameters/index.js";
 import {wait} from "./commons/index.js";
 
@@ -45,10 +46,8 @@ program
     .description('Parámetros válidos para comando "airVisio"')
     .action(async () => {
         magnitudesHelp()
-        await wait('Presione Enter para continuar, q Q ESC para salir...')
-
-
-
+        await wait('Presione <Enter> para continuar o <q> para salir ...');
+        opointsHelp()
     })
 
 program.parseAsync();

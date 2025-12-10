@@ -37,17 +37,22 @@ export const MAGNITUDES: IMagnitude[] = [
     { nombre: 'Radiación solar',          airVisio: 'RAD_SOLAR', visor: 88, abbr: "RS"   }
 ];
 
-export const OPOINT: IOpoint[] = [
-    {nombre: 'Belisario',   airVisio: 'Belisario',   visor: 3,  abbr: "BEL" },
-    {nombre: 'Carapungo',   airVisio: 'Carapungo',   visor: 2,  abbr: "CAR" },
-    {nombre: 'Centro',      airVisio: 'Centro',      visor: 6,  abbr: "CEN" },
-    {nombre: 'Cotocollao',  airVisio: 'Cotocollao',  visor: 1,  abbr: "COT" },
-    {nombre: 'El Camal',    airVisio: 'El Camal',    visor: 5,  abbr: "CML" },
-    {nombre: 'Guamani',     airVisio: 'Guamani',     visor: 7,  abbr: "GUA" },
-    {nombre: 'Los Chillos', airVisio: 'Los Chillos', visor: 9,  abbr: "LCH" },
-    {nombre: 'San Antonio', airVisio: 'San Antonio', visor: 14, abbr: "SAP" },
-    {nombre: 'Tumbaco',     airVisio: 'Tumbaco',     visor: 8,  abbr: "TUM" }
+/**
+ * Lista de estaciones de monitoreo de la calidad del aire.
+ * Cada estación tiene las siguientes propiedades:
+ * @property {string} nombre - Nombre completo de la estación de monitoreo
+ * @property {string} airVisio - Identificador usado en el sistema AirVisio
+ * @property {number} visor - Código numérico usado en el sistema Visor
+ * @property {string} abbr - Abreviatura o código usado para identificar la estación
+ */
+export const OPOINTS: IOpoint[] = [
+    {nombre: 'Belisario', airVisio: 'Belisario', visor: 3, abbr: "BEL"},
+    {nombre: 'Carapungo', airVisio: 'Carapungo', visor: 2, abbr: "CAR"},
+    {nombre: 'Centro', airVisio: 'Centro', visor: 6, abbr: "CEN"},
+    {nombre: 'Cotocollao', airVisio: 'Cotocollao', visor: 1, abbr: "COT"},
+    {nombre: 'El Camal', airVisio: 'El Camal', visor: 5, abbr: "CML"},
+    {nombre: 'Guamani', airVisio: 'Guamani', visor: 7, abbr: "GUA"},
+    {nombre: 'Los Chillos', airVisio: 'Los Chillos', visor: 9, abbr: "LCH"},
+    {nombre: 'San Antonio', airVisio: 'San Antonio', visor: 14, abbr: "SAP"},
+    {nombre: 'Tumbaco', airVisio: 'Tumbaco', visor: 8, abbr: "TUM"}
 ];
-
-
-

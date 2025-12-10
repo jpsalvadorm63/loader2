@@ -27,3 +27,10 @@ export interface IOpoint {
     /** Abreviación del punto de observación */
     abbr: string;
 }
+
+export interface IInterval {
+    /** Nombre del intervalo */
+    nombre: string;
+    /** intervalo de tiempo */
+    interval: string
+}
