@@ -1,4 +1,4 @@
-import {IMagnitude, IOpoint} from "./params.interfaces.js";
+import {IInterval, IMagnitude, IOpoint} from "./params.interfaces.js";
 
 /**
  * Se utiliza como parámetro por default cuando no se pasa parámetro alguno
@@ -56,3 +56,15 @@ export const OPOINTS: IOpoint[] = [
     {nombre: 'San Antonio', airVisio: 'San Antonio', visor: 14, abbr: "SAP"},
     {nombre: 'Tumbaco', airVisio: 'Tumbaco', visor: 8, abbr: "TUM"}
 ];
+
+
+/**
+ * Lista de intervalos de tiempo disponibles para el promediado de mediciones.
+ * Cada intervalo tiene las siguientes propiedades:
+ * @property {string} nombre - Descripción legible del intervalo de tiempo
+ * @property {string} interval - Código del intervalo usado en el sistema (formato: NNNu donde NNN es número y u es unidad)
+ */
+export const IIntervals: IInterval[] = [
+    {nombre: 'Promedio x minuto', interval: '001m'},
+    {nombre: 'Promedio x hora', interval: '001h'},
+]

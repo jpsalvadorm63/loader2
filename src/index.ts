@@ -9,6 +9,7 @@ import {
     opointsHelp
 } from "./parameters/index.js";
 import {wait} from "./commons/index.js";
+import {intervalsHelp} from "./parameters/params.intervals.js";
 
 dayjs.locale('es');
 
@@ -48,6 +49,8 @@ program
         magnitudesHelp()
         await wait('Presione <Enter> para continuar o <q> para salir ...');
         opointsHelp()
+        await wait('Presione <Enter> para continuar o <q> para salir ...');
+        intervalsHelp()
     })
 
 program.parseAsync();

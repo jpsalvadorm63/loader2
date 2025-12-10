@@ -2,11 +2,11 @@ import {
     ALLPARAM,
     NONEPARAM,
     OPOINTS
-} from "./params.constants.js";
+} from "./configs/params.constants.js";
 
 import {
     IOpoint
-} from "./params.interfaces.js";
+} from "./configs/params.interfaces.js";
 
 import chalk from "chalk";
 import Table from "cli-table3";
@@ -36,6 +36,7 @@ export const validOpoints = (simple: boolean = true) => {
         : OPOINTS.map(m => ({nombre: m.nombre, airVisio: m.airVisio}));
 }
 
+
 /**
  * Verifica si una lista de puntos de observación separados por comas es válida
  * @param opoints - Cadena de puntos de observación separados por comas
@@ -44,7 +45,7 @@ export const validOpoints = (simple: boolean = true) => {
  */
 export const validateOpoints = (opoints: string): boolean => {
     if (opoints === NONEPARAM) {
-        throw new Error("No se ha especificado uno o más magnitudes separadas por coma");
+        throw new Error("No se ha especificado uno o más puntos de observación separadas por coma");
     }
     if (opoints === ALLPARAM) {
         return true
@@ -70,7 +71,7 @@ const table = new Table({
         chalk.bold.black("airVisio"),
         chalk.bold.black("visor")
     ],
-    colWidths: [28, 10, 8], // ancho de columnas
+    colWidths: [20, 20, 8], // ancho de columnas
     chars: {
         'top': '─', 'top-mid': '┬', 'top-left': '┌', 'top-right': '┐',
         'bottom': '─', 'bottom-mid': '┴', 'bottom-left': '└', 'bottom-right': '┘',

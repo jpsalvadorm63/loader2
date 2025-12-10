@@ -5,12 +5,12 @@ export {
     ALLPARAM,
     MAGNITUDES,
     OPOINTS,
-} from "./params.constants.js"
+} from "./configs/params.constants.js"
 
 export type {
     IMagnitude,
     IOpoint,
-} from "./params.interfaces.js"
+} from "./configs/params.interfaces.js"
 
 export type {
     TConsoleMessageType,

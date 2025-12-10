@@ -2,12 +2,12 @@ import {
     ALLPARAM,
     NONEPARAM,
     MAGNITUDES,
-} from "./params.constants.js";
+} from "./configs/params.constants.js";
 
 import {
     IMagnitude,
     // IOpoint
-} from "./params.interfaces.js";
+} from "./configs/params.interfaces.js";
 
 // export const reviewOpoint = (opoint: string): boolean => {
 //     return OPOINT.some((o : IOpoint) => o.airVisio === opoint);
