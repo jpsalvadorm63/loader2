@@ -5,20 +5,11 @@ import { Command } from "commander";
 import { str2dayjs } from "./dateTime/index.js";
 import { DATE_TIME_FORMAT } from "./dateTime/index.js";
 import {
-    magnitudesHelp,
-    opointsHelp
-} from "./parameters/index.js";
-import {clearScreen, wait} from "./commons/index.js";
-import {intervalsHelp} from "./parameters/params.intervals.js";
-import {
-    dateTimeHelp1,
-    dateTimeHelp2,
-    dateTimeHelp3,
-    dateTimeHelp4,
-    dateTimeHelp5,
     formatNow
 } from "./dateTime/dateTime.js";
 import {paramsHelp} from "./parameters/params.js";
+import {validParamsHelp} from "./command.validParams.js";
+import {commandFrom} from "./command.from.js";
 
 dayjs.locale('es');
 
@@ -35,44 +26,23 @@ program
     .command('fromAirVisio')
     .description('Descarga de datos')
     .option(
-        '-F,--from <datetime>',
-        `Fecha en formato "${DATE_TIME_FORMAT}"`,
-        str2dayjs,
-        formatNow()
+        '-F,--from <datetime;frameTime>',
+        `Fecha en formato "${DATE_TIME_FORMAT}" y frama de tiempo por ejemplo -24h unidos por punto y com, ${formatNow()};-24h`,
+        commandFrom,
+        commandFrom(`${formatNow()};-3h'`)
     )
     // .option(
     //     '-M,--magnitudes <magnitudes>',
     //     `magnitudes válidas, una o mas entre "${validMagnitudes()}"`,
     //     (magnitudes) => reviewMagnitudes(magnitudes)
     // )
-    .action((options: { from: string }) => {
-        console.log('> ', options.from);
+    .action(props => {
+        console.log('>> ', props);
     });
 
 program
     .command('validParams')
     .description('Parámetros válidos para comando "loader2 airVisio"')
-    .action(async () => {
-        const clearMyScreen = true;
-        clearScreen();
-        paramsHelp()
-        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        dateTimeHelp1();
-        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        dateTimeHelp2();
-        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        dateTimeHelp3();
-        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        dateTimeHelp4();
-        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        dateTimeHelp5();
-        await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        magnitudesHelp();
-        await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        opointsHelp();
-        await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        intervalsHelp();
-        process.exit(0)
-    })
+    .action(validParamsHelp)
 
 program.parseAsync();

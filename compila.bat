@@ -7,7 +7,7 @@ if errorlevel 1 goto :error
 call npm link
 if errorlevel 1 goto :error
 
-call loader2 validParams
+call loader2 fromAirVisio --from="2025-05-02T03:00;-24h"
 if errorlevel 1 goto :error
 
 echo.
