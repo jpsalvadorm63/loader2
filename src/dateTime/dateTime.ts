@@ -1,17 +1,28 @@
 import dayjs from "dayjs";
+
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+
 import {
     DATE_TIME_FORMAT,
     max_anios,
     max_meses,
     max_dias,
     max_horas
-} from "./dateTime-constants.js";
+} from "./dateTime.constants.js";
+
 import {
     ITimeExpression,
     ITimeInterval,
     ITimeIntervalDiff
 } from "./dateTime.interfaces.js";
+
+import chalk from "chalk";
+
+import {
+    fnConsole,
+    INFO_MESSAGE,
+    TConsoleMessageType
+} from "../parameters/configs/commons.js";
 
 dayjs.extend(customParseFormat);
 
@@ -239,4 +250,27 @@ export const roundDateTime = (dateTime: string, unit: 'month' | 'day' | 'hour'):
     }
 
     return rounded.format(DATE_TIME_FORMAT);
+}
+
+export const dateTimeHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+    const myConsole = fnConsole(msgType);
+    myConsole('\n-----')
+    myConsole(chalk.rgb(173, 216, 230).bold("Franja de tiempo para la extracción de datos desde el sistema AirVisio\nen la línea de comandos.\n"))
+    myConsole(chalk.rgb(173, 216, 230)("\nLa fecha de referencia desde la cual se desea extraer los datos se\nespecifican con las opción de línea de comandos '--from=' (o la opción corta '-F ' o con )"))
+
+
+
+
+
+
+    myConsole(chalk.blue("\n La fecha de referencia desde la cual se desea extraer los datos se especifican con '-F ' o con '--from='"))
+    myConsole(chalk.blue(`   en el formato ${DATE_TIME_FORMAT}. Por ejemplo: loader2 --from=2021-12-31T05:10`))
+    myConsole(chalk.blue("   Como se puede ver, La letra T separa la fecha de la hora.\n"))
+    myConsole(chalk.blue("   Si no se especifica ningún valor para el parámetro, para el parámetro -F o --FROM"))
+    myConsole(chalk.blue("   el sistema asumirá la fecha actual y la hora más cercana.\n"))
+    myConsole(chalk.blue("   Por ejemplo, la hora más cercana a 16:35 es 17:00,"))
+    myConsole(chalk.blue("   mientras que la hora más cercana a 16:25 son las 16:00.\n"))
+    myConsole(chalk.blue("   Para poner el tiempo contado desde la fecha y la hora selecciona para bajar datos"))
+    myConsole(chalk.blue("   se procede a,colocar una coma"))
+
 }

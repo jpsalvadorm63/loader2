@@ -19,7 +19,7 @@ export type {
     WARN_MESSAGE,
     LOG_MESSAGE,
     ERROR_MESSAGE
-} from "./commons.js"
+} from "./configs/commons.js"
 
 export {
     reviewMagnitude,
@@ -34,3 +34,6 @@ export {
     reviewOpoint,
     opointsHelp
 } from "./params.opoints.js"
+
+export {
+}

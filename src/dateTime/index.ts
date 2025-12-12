@@ -12,7 +12,7 @@ export {
     max_dias,
     max_horas,
     max_meses,
-} from './dateTime-constants.js';
+} from './dateTime.constants.js';
 
 /**
  * Funciones exportadas:

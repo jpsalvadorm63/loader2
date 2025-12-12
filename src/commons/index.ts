@@ -1,1 +1,4 @@
-export {wait} from './keyb.js'
+export {
+    wait,
+    clearScreen
+} from './keyb.js'

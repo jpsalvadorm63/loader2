@@ -8,8 +8,10 @@ import {
     magnitudesHelp,
     opointsHelp
 } from "./parameters/index.js";
-import {wait} from "./commons/index.js";
+import {clearScreen, wait} from "./commons/index.js";
 import {intervalsHelp} from "./parameters/params.intervals.js";
+import {dateTimeHelp} from "./dateTime/dateTime.js";
+import {paramsHelp} from "./parameters/params.js";
 
 dayjs.locale('es');
 
@@ -44,13 +46,21 @@ program
 
 program
     .command('validParams')
-    .description('Parámetros válidos para comando "airVisio"')
+    .description('Parámetros válidos para comando "loader2 airVisio"')
     .action(async () => {
-        magnitudesHelp()
-        await wait('Presione <Enter> para continuar o <q> para salir ...');
-        opointsHelp()
-        await wait('Presione <Enter> para continuar o <q> para salir ...');
-        intervalsHelp()
+        const clearMyScreen = true;
+
+        clearScreen();
+        paramsHelp()
+        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        dateTimeHelp();
+        await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        magnitudesHelp();
+        await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        opointsHelp();
+        await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        intervalsHelp();
+        process.exit(0)
     })
 
 program.parseAsync();
