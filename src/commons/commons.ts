@@ -29,12 +29,11 @@ export type TConsoleMessageType = typeof INFO_MESSAGE | typeof LOG_MESSAGE | typ
  * @returns {Function} Función de consola correspondiente al tipo de mensaje
  */
 export const fnConsole = (msgType: TConsoleMessageType = INFO_MESSAGE) : Function => {
-    const myConsole = {
+    // const myConsole =
+    return {
         INFO_MESSAGE: console.info,
         LOG_MESSAGE: console.log,
         ERROR_MESSAGE: console.error,
         WARN_MESSAGE: console.warn
     }[msgType] || console.info
-
-    return myConsole
 }
