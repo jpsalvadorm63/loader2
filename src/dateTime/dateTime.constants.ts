@@ -8,7 +8,7 @@ export const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 /**
  * Máximo tamaño en horas de un intervalo de tiempo
  */
-export const max_horas = 172 // 7 días en horas.
+export const max_horas = 6*24 // 6 días en horas.
 
 /**
  * Máximo tamaño en días de un intervalo de tiempo

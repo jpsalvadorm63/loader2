@@ -2,7 +2,7 @@ import {
     fnConsole,
     INFO_MESSAGE,
     TConsoleMessageType
-} from "./configs/commons.js";
+} from "../commons/commons.js";
 import chalk from "chalk";
 
 /**
@@ -17,6 +17,6 @@ export const paramsHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     myConsole("Para lograr bajar los datos se utiliza el siguiente comando a ser ejecutado\ndesde la línea de comandos (C:/> es el indicador de línea de comandos):\n")
     myConsole(chalk.bold("C:/> loader2 fromAirVisio <params>\n"))
     myConsole("(En sistemas UNIX o LINUX o MAC/OS el indicador de la línea de comandos puede\nser marcado por el símbolo $.)\n")
-    myConsole("Como se puede ver, se requieren definir parámetros (<params>) para la extracción\nde datos. Estos parámetros púeden ser obligatorios o nó y determinan los filtros\npara extraer datos.\n")
+    myConsole("Como se puede ver, se requieren definir parámetros (<params>) para la extracción\nde datos. Estos parámetros pueden ser obligatorios o nó y determinan los filtros\npara extraer datos.\n")
     myConsole("A continuación se detallan los parámtros.\n")
 }

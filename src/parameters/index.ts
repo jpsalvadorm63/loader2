@@ -12,15 +12,6 @@ export type {
     IOpoint,
 } from "./configs/params.interfaces.js"
 
-export type {
-    TConsoleMessageType,
-    fnConsole,
-    INFO_MESSAGE,
-    WARN_MESSAGE,
-    LOG_MESSAGE,
-    ERROR_MESSAGE
-} from "./configs/commons.js"
-
 export {
     reviewMagnitude,
     validMagnitudes,

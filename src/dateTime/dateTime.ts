@@ -22,9 +22,22 @@ import {
     fnConsole,
     INFO_MESSAGE,
     TConsoleMessageType
-} from "../parameters/configs/commons.js";
+} from "../commons/index.js";
 
 dayjs.extend(customParseFormat);
+
+/**
+ * Formats the current date and time using the specified global date-time format.
+ *
+ * The `formatNow` function utilizes the `dayjs` library to retrieve and format the
+ * current date and time. It applies the format described by the `DATE_TIME_FORMAT`
+ * constant to ensure consistency across all date-time outputs.
+ *
+ * @function
+ * @returns {string} A string representing the current date and time in the
+ *                   specified `DATE_TIME_FORMAT`.
+ */
+export const formatNow = () => dayjs().format(DATE_TIME_FORMAT);
 
 /**
  * Convierte una cadena de texto en formato fecha/hora a un formato estandarizado
@@ -252,25 +265,159 @@ export const roundDateTime = (dateTime: string, unit: 'month' | 'day' | 'hour'):
     return rounded.format(DATE_TIME_FORMAT);
 }
 
-export const dateTimeHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+/**
+ * Registra mensajes de consola que describen el uso de los parámetros de rango de tiempo para la extracción de datos desde
+ * la interfaz de línea de comandos del sistema AirVisio.
+ *
+ * @param {TConsoleMessageType} [msgType=INFO_MESSAGE] - El tipo de mensaje de consola a mostrar.
+ * Se utiliza para determinar la apariencia y el formato de la salida del mensaje en la consola.
+ *
+ * Esta función explica cómo usar el parámetro `-F` o `--from` para especificar una fecha de referencia
+ * y un rango de tiempo. El parámetro es opcional y proporciona una forma de calcular una fecha de inicio y
+ * una fecha de fin para la extracción de datos.
+ *
+ * - La fecha de referencia debe proporcionarse en el formato definido por `DATE_TIME_FORMAT`
+ *   (por ejemplo, `2021-12-31T05:10`).
+ * - El rango de tiempo es un valor que especifica una duración. Si el valor es negativo, indica
+ *   la duración antes de la fecha de referencia; si es positivo, indica la duración después de la
+ *   fecha de referencia.
+ */
+export const dateTimeHelp0 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     myConsole('\n-----')
-    myConsole(chalk.rgb(173, 216, 230).bold("Franja de tiempo para la extracción de datos desde el sistema AirVisio\nen la línea de comandos.\n"))
-    myConsole(chalk.rgb(173, 216, 230)("\nLa fecha de referencia desde la cual se desea extraer los datos se\nespecifican con las opción de línea de comandos '--from=' (o la opción corta '-F ' o con )"))
+    myConsole(chalk.rgb(173, 216, 230).bold.underline("Franja de tiempo para la extracción de datos desde el sistema AirVisio\nen la línea de comandos.\n"))
+    myConsole(chalk.bold("-F o --from"), chalk.bold(" <fecha de referencia;franja de tiempo>       (parámetro no obligatorio)\n"))
+    myConsole("Sirve para especificar la ", chalk.bold("<fecha de referencia>"), " desde la cual (o hasta la cual)\naplicar una", chalk.bold("<franja de tiempo>"),
+        " suficientes para calcular una fecha inicial y una fecha\nfinal, que establecen el", chalk.bold("filtro de tiempo"), "para extraer los datos del sistema visor.\n")
+    myConsole(chalk.bold("    <fecha de referencia>"), ` se especifica con el formato ${DATE_TIME_FORMAT}.\n                           Por ejemplo: 2021-12-31T05:10\n`)
+    myConsole(chalk.bold("    <Franja de tiempo>   "), ` Es una cantidad de tiempo que especifica una qué\n                           tiempo antes de la fecha de referencia (si la franja es\n                           negativa) o qué tiempo después (si la franja e positiva).\n`)
+}
 
+/**
+ * Muestra mensajes de consola describiendo el uso del parámetro de franja de tiempo por horas
+ * para la extracción de datos desde la interfaz de línea de comandos del sistema AirVisio.
+ *
+ * @param {TConsoleMessageType} [msgType=INFO_MESSAGE] - El tipo de mensaje de consola a mostrar.
+ * Se utiliza para determinar la apariencia y el formato de la salida del mensaje en la consola.
+ *
+ * Esta función explica cómo especificar franjas de tiempo en horas usando valores negativos
+ * (para tiempo antes de la fecha de referencia) o positivos (para tiempo después de la fecha
+ * de referencia). Incluye ejemplos prácticos de uso del comando con el parámetro --from.
+ */
+export const dateTimeHelp1 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+    const myConsole = fnConsole(msgType);
+    dateTimeHelp0(msgType)
+    myConsole(chalk.bold("   Franja de tiempo por horas.- "),
+        `rango aceptado: -1h a -${max_horas}h, es decir un valor entre\n                           -1 a -${max_horas} horas antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1h a ${max_horas}h, es decir un valor entre\n                           1 a ${max_horas} horas luego de la fecha y hora de referencia.\n`)
+    myConsole(chalk.bold("                           Ejemplo 1:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;-4h   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-11-30T22:00, y final = 2024-12-01T02:00\n"))
+    myConsole(chalk.bold("                           Ejemplo 2:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;+4h   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-12-01T02:00, y final = 2024-12-01T06:00\n"))
+}
 
+/**
+ * Muestra mensajes de consola describiendo el uso del parámetro de franja de tiempo por días
+ * para la extracción de datos desde la interfaz de línea de comandos del sistema AirVisio.
+ *
+ * @param {TConsoleMessageType} [msgType=INFO_MESSAGE] - El tipo de mensaje de consola a mostrar.
+ * Se utiliza para determinar la apariencia y el formato de la salida del mensaje en la consola.
+ *
+ * Esta función explica cómo especificar franjas de tiempo en días usando valores negativos
+ * (para tiempo antes de la fecha de referencia) o positivos (para tiempo después de la fecha
+ * de referencia). Incluye ejemplos prácticos de uso del comando con el parámetro --from.
+ */
+export const dateTimeHelp2 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+    const myConsole = fnConsole(msgType);
+    dateTimeHelp0(msgType)
+    myConsole(chalk.bold("   Franja de tiempo por dias.- "),
+        `rango aceptado: -1d a -${max_dias}d, es decir un valor entre\n                           -1 a -${max_dias} dias antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1d a ${max_dias}d, es decir un valor entre\n                           1 a ${max_dias} dias luego de la fecha y hora de referencia.\n`)
+    myConsole(chalk.bold("                           Ejemplo 1:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;-4d   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-11-27T02:00, y final = 2024-12-01T02:00\n"))
+    myConsole(chalk.bold("                           Ejemplo 2:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;+4d   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-12-01T02:00, y final = 2024-12-05T02:00\n"))
+}
 
+/**
+ * Muestra mensajes de consola describiendo el uso del parámetro de franja de tiempo por meses
+ * para la extracción de datos desde la interfaz de línea de comandos del sistema AirVisio.
+ *
+ * @param {TConsoleMessageType} [msgType=INFO_MESSAGE] - El tipo de mensaje de consola a mostrar.
+ * Se utiliza para determinar la apariencia y el formato de la salida del mensaje en la consola.
+ *
+ * Esta función explica cómo especificar franjas de tiempo en meses usando valores negativos
+ * (para tiempo antes de la fecha de referencia) o positivos (para tiempo después de la fecha
+ * de referencia). Incluye ejemplos prácticos de uso del comando con el parámetro --from.
+ */
+export const dateTimeHelp3 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+    const myConsole = fnConsole(msgType);
+    dateTimeHelp0(msgType)
+    myConsole(chalk.bold("   Franja de tiempo por meses.- "),
+        `rango aceptado: -1d a -${max_meses}m, es decir un valor entre\n                           -1 a -${max_meses} meses antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1d a ${max_meses}m, es decir un valor entre\n                           1 a ${max_meses} meses luego de la fecha y hora de referencia.\n`)
+    myConsole(chalk.bold("                           Ejemplo 1:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;-4m   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-08-01T02:00, y final = 2024-12-01T02:00\n"))
+    myConsole(chalk.bold("                           Ejemplo 2:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;+4m   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-12-01T02:00, y final = 2025-04-01T02:00\n"))
+}
 
+/**
+ * Muestra mensajes de consola describiendo el uso del parámetro de franja de tiempo por años
+ * para la extracción de datos desde la interfaz de línea de comandos del sistema AirVisio.
+ *
+ * @param {TConsoleMessageType} [msgType=INFO_MESSAGE] - El tipo de mensaje de consola a mostrar.
+ * Se utiliza para determinar la apariencia y el formato de la salida del mensaje en la consola.
+ *
+ * Esta función explica cómo especificar franjas de tiempo en años usando valores negativos
+ * (para tiempo antes de la fecha de referencia) o positivos (para tiempo después de la fecha
+ * de referencia). Incluye ejemplos prácticos de uso del comando con el parámetro --from.
+ */
+export const dateTimeHelp4 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+    const myConsole = fnConsole(msgType);
+    dateTimeHelp0(msgType)
+    myConsole(chalk.bold("   Franja de tiempo por años.- "),
+        `rango aceptado: -1d a -${max_anios}a, es decir un valor entre\n                           -1 a -${max_anios} años antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1d a ${max_anios}a, es decir un valor entre\n                           1 a ${max_anios} años luego de la fecha y hora de referencia.\n`)
+    myConsole(chalk.bold("                           Ejemplo 1:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;-1a   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2023-12-01T02:00, y final = 2024-12-01T02:00\n"))
+    myConsole(chalk.bold("                           Ejemplo 2:\n"))
+    myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=2024-12-01T02:00;+1a   <otros params>\n"))
+    myConsole("                           Equivale al filtro de tiempo:")
+    myConsole(chalk.bold("                           fecha hora inicial = 2024-12-01T02:00, y final = 2025-12-01T02:00\n"))
+}
 
-
-    myConsole(chalk.blue("\n La fecha de referencia desde la cual se desea extraer los datos se especifican con '-F ' o con '--from='"))
-    myConsole(chalk.blue(`   en el formato ${DATE_TIME_FORMAT}. Por ejemplo: loader2 --from=2021-12-31T05:10`))
-    myConsole(chalk.blue("   Como se puede ver, La letra T separa la fecha de la hora.\n"))
-    myConsole(chalk.blue("   Si no se especifica ningún valor para el parámetro, para el parámetro -F o --FROM"))
-    myConsole(chalk.blue("   el sistema asumirá la fecha actual y la hora más cercana.\n"))
-    myConsole(chalk.blue("   Por ejemplo, la hora más cercana a 16:35 es 17:00,"))
-    myConsole(chalk.blue("   mientras que la hora más cercana a 16:25 son las 16:00.\n"))
-    myConsole(chalk.blue("   Para poner el tiempo contado desde la fecha y la hora selecciona para bajar datos"))
-    myConsole(chalk.blue("   se procede a,colocar una coma"))
-
+/**
+ * Muestra mensajes de consola explicando el comportamiento por defecto cuando no se especifica
+ * el parámetro -F o --from en la línea de comandos del sistema AirVisio.
+ *
+ * @param {TConsoleMessageType} [msgType=INFO_MESSAGE] - El tipo de mensaje de consola a mostrar.
+ * Se utiliza para determinar la apariencia y el formato de la salida del mensaje en la consola.
+ *
+ * Esta función informa al usuario que cuando no se proporciona una fecha de referencia explícita,
+ * el sistema utilizará la fecha y hora actual como valor por defecto, mostrando cuál es ese valor
+ * en el momento de la consulta.
+ */
+export const dateTimeHelp5 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
+    const myConsole = fnConsole(msgType);
+    dateTimeHelp0(msgType)
+    myConsole(chalk.bold("    Si no se especifica níngún parámetro -F o --from .- "))
+    myConsole("                           Fecha y hora de referencia por defecto, la actual:")
+    myConsole(chalk.bold(`                           (${formatNow()})\n`))
+    myConsole("                           Franja de tiempo por defecto:")
+    myConsole(chalk.bold(`                           -3h, -3 horas\n`))
 }

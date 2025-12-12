@@ -10,14 +10,19 @@ import {
 } from "./parameters/index.js";
 import {clearScreen, wait} from "./commons/index.js";
 import {intervalsHelp} from "./parameters/params.intervals.js";
-import {dateTimeHelp} from "./dateTime/dateTime.js";
+import {
+    dateTimeHelp1,
+    dateTimeHelp2,
+    dateTimeHelp3,
+    dateTimeHelp4,
+    dateTimeHelp5,
+    formatNow
+} from "./dateTime/dateTime.js";
 import {paramsHelp} from "./parameters/params.js";
 
 dayjs.locale('es');
 
 dayjs.extend(customParseFormat);
-
-const formatNow = () => dayjs().format(DATE_TIME_FORMAT);
 
 const program = new Command();
 
@@ -49,11 +54,18 @@ program
     .description('Parámetros válidos para comando "loader2 airVisio"')
     .action(async () => {
         const clearMyScreen = true;
-
         clearScreen();
         paramsHelp()
         await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
-        dateTimeHelp();
+        dateTimeHelp1();
+        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        dateTimeHelp2();
+        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        dateTimeHelp3();
+        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        dateTimeHelp4();
+        await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+        dateTimeHelp5();
         await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
         magnitudesHelp();
         await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
