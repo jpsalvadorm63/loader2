@@ -15,9 +15,9 @@ import Table from "cli-table3";
 import {
     INFO_MESSAGE,
     TConsoleMessageType
-} from "../commons/commons.js";
+} from "../commons/console.js";
 
-import {fnConsole} from "../commons/commons.js";
+import {fnConsole} from "../commons/console.js";
 
 
 /**

@@ -2,7 +2,7 @@ import {
     fnConsole,
     INFO_MESSAGE,
     TConsoleMessageType
-} from "../commons/commons.js";
+} from "../commons/console.js";
 import chalk from "chalk";
 
 /**

@@ -5,7 +5,7 @@ export {
 
 export type {
     TConsoleMessageType,
-} from "./commons.js"
+} from "./console.js"
 
 export {
     fnConsole,
@@ -13,4 +13,4 @@ export {
     WARN_MESSAGE,
     LOG_MESSAGE,
     ERROR_MESSAGE
-} from "./commons.js"
+} from "./console.js"

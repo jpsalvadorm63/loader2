@@ -7,11 +7,19 @@
  * - max_meses: Número máximo de meses permitido
  */
 export {
+    INVALID_START_DATE,
+    INVALID_END_DATE,
     DATE_TIME_FORMAT,
-    max_anios,
-    max_dias,
-    max_horas,
-    max_meses,
+    MAX_ANIOS,
+    MAX_DIAS,
+    MAX_HORAS,
+    MAX_MESES,
+    DEFAULT_TIME_FRAME_FORMAT_ERROR,
+    DEFAULT_DATE_TIME_FORMAT_ERROR_MSG,
+    DEFAULT_MAX_ANIOS_ERROR_MSG,
+    DEFAULT_MAX_DIAS_ERROR_MSG,
+    DEFAULT_MAX_HORAS_ERROR_MSG,
+    DEFAULT_MAX_MESES_ERROR_MSG,
 } from './dateTime.constants.js';
 
 /**
@@ -29,7 +37,7 @@ export {
     computeTimeInterval,
     timeIntervalDiff,
     truncDateTime,
-    roundDateTime
+    roundDateTime,
 } from './dateTime.js';
 
 /**

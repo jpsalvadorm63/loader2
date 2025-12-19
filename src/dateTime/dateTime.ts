@@ -4,10 +4,15 @@ import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 
 import {
     DATE_TIME_FORMAT,
-    max_anios,
-    max_meses,
-    max_dias,
-    max_horas
+    MAX_ANIOS,
+    MAX_MESES,
+    MAX_DIAS,
+    MAX_HORAS,
+    DEFAULT_MAX_HORAS_ERROR_MSG,
+    DEFAULT_MAX_DIAS_ERROR_MSG,
+    DEFAULT_MAX_MESES_ERROR_MSG,
+    DEFAULT_MAX_ANIOS_ERROR_MSG,
+    DEFAULT_DATE_TIME_FORMAT_ERROR_MSG, DEFAULT_TIME_FRAME_FORMAT_ERROR
 } from "./dateTime.constants.js";
 
 import {
@@ -23,6 +28,10 @@ import {
     INFO_MESSAGE,
     TConsoleMessageType
 } from "../commons/index.js";
+
+import {
+    PLACEHOLDER
+} from "../commons/console.js";
 
 dayjs.extend(customParseFormat);
 
@@ -40,22 +49,26 @@ dayjs.extend(customParseFormat);
 export const formatNow = () => dayjs().format(DATE_TIME_FORMAT);
 
 /**
- * Convierte una cadena de texto en formato fecha/hora a un formato estandarizado
+ * Confirma que una cadena de texto esté en formato fecha/hora DATE_TIME_FORMAT
+ * estandarizado y que sea una fecha válida.
  *
  * @param {string} value - Cadena de texto que representa una fecha y hora
- * @returns {string} Fecha y hora en formato ${DATE_TIME_FORMAT}
- * @throws {Error} Si el formato de la fecha de entrada no coincide con DATE_TIME_FORMAT
+ * @param {string} errorMsg - Mensaje de error personalizado en caso de que no sea una fecha válida o no esté en el formato DATE_TIME_FORMAT.
+ *                            Si contiene "..." será reemplazado por el mensaje de error predeterminado.
+ * @returns {string} Fecha y hora formateada en formato ${DATE_TIME_FORMAT}
+ * @throws {Error} Si el formato de la fecha de entrada no coincide con DATE_TIME_FORMAT o si la fecha no es válida
  *
  * @example
  * str2dayjs('2025-11-19T14:30') // retorna '2025-11-19T14:30'
  * str2dayjs('2025-11-19T14:59') // retorna '2025-11-19T14:59'
- * str2dayjs('2025-11-19T14:60') // retorna error '-F,--from debe coincidir con el formato . . .'
+ * str2dayjs('2025-11-19T14:60') // lanza error `debe coincidir con el formato ${DATE_TIME_FORMAT}`
  * str2dayjs('2025-11-19T14:00') // retorna '2025-11-19T14:00'
  */
-export const str2dayjs = (value: string): string => {
+export const str2dayjs = (value: string, errorMsg: string = DEFAULT_DATE_TIME_FORMAT_ERROR_MSG): string => {
     const parsed = dayjs(value, DATE_TIME_FORMAT, true); // modo estricto
     if (!parsed.isValid()) {
-        throw new Error(`-F,--from debe coincidir con el formato ${DATE_TIME_FORMAT}`);
+        const formattedErrorMessage = errorMsg.includes(PLACEHOLDER) ? errorMsg.replace(PLACEHOLDER, DEFAULT_DATE_TIME_FORMAT_ERROR_MSG) : errorMsg;
+        throw new Error(formattedErrorMessage);
     } else
         return parsed.format(DATE_TIME_FORMAT);
 };
@@ -75,10 +88,10 @@ export const str2dayjs = (value: string): string => {
  * timeFrame('1a')    // retorna { sign: '-', number: 1, unit: 'a' }
  *
  * Unidades permitidas:
- * h: horas (máximo ${max_horas})
- * d: días (máximo ${max_dias})
- * m: meses (máximo ${max_meses})
- * a: años (máximo {max_nios})
+ * h: horas (máximo ${MAX_HORAS})
+ * d: días (máximo ${MAX_DIAS})
+ * m: meses (máximo ${MAX_MESES})
+ * a: años (máximo {MAX_ANIOS})
  */
 export const timeFrame = (value: string): ITimeExpression => {
     // ^([+-])?   → optional sign (+ or -) default -
@@ -88,27 +101,27 @@ export const timeFrame = (value: string): ITimeExpression => {
     const match = value.match(regex);
 
     if (!match) {
-        throw new Error('Formato para expresión de tiempo no válido');
+        throw new Error(DEFAULT_TIME_FRAME_FORMAT_ERROR);
     }
 
     const sign = match[1] || "-";
     const number = parseInt(match[2] || "3", 10);
     const unit = match[3] || "h";
 
-    if (unit === "h" && number > max_horas) {
-        throw new Error(`Si especifica las unidades como h (horas), número debe ser máximo ${max_horas}`);
+    if (unit === "h" && number > MAX_HORAS) {
+        throw new Error(DEFAULT_MAX_HORAS_ERROR_MSG);
     }
 
-    if (unit === "d" && number > max_dias) {
-        throw new Error(`Si especifica las unidades como d (días), número debe ser máximo ${max_dias}`);
+    if (unit === "d" && number > MAX_DIAS) {
+        throw new Error(DEFAULT_MAX_DIAS_ERROR_MSG);
     }
 
-    if (unit === "m" && number > max_meses) {
-        throw new Error(`Si especifica las unidades como m (mes), número debe ser máximo ${max_meses}`);
+    if (unit === "m" && number > MAX_MESES) {
+        throw new Error(DEFAULT_MAX_MESES_ERROR_MSG);
     }
 
-    if (unit === "a" && number > max_anios) {
-        throw new Error(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
+    if (unit === "a" && number > MAX_ANIOS) {
+        throw new Error(DEFAULT_MAX_ANIOS_ERROR_MSG);
     }
 
     return <ITimeExpression>{ sign, number, unit };
@@ -149,7 +162,6 @@ export const computeTimeInterval = (dateTime: string, te: ITimeExpression): ITim
         start: startDate.format(DATE_TIME_FORMAT),
         end: endDate.format(DATE_TIME_FORMAT)
     };
-
 }
 
 /**
@@ -234,17 +246,17 @@ export const truncDateTime = (dateTime: string, unit: 'month' | 'day' | 'hour' |
 }
 
 /**
- * Redondea una fecha y hora dada a la unidad especificada (mes, día o hora).
- * Por ejemplo, redondear '2023-10-26T14:35:12' a 'day' resultaría en '2023-10-26T00:00:00'.
+ * Redondea una fecha y hora dada hacia arriba a la siguiente unidad especificada (mes, día u hora).
+ * Por ejemplo, redondear '2023-10-26T14:35:12' a 'day' resultaría en '2023-10-27T00:00:00'.
  *
  * @param {string} dateTime - La fecha y hora a redondear, en formato DATE_TIME_FORMAT.
- * @param {'month' | 'day' | 'hour'} unit - La unidad a la que se debe redondear la fecha y hora.
- * @returns {string} La fecha y hora redondeada, en formato DATE_TIME_FORMAT.
+ * @param {'month' | 'day' | 'hour'} unit - La unidad a la que se debe redondear la fecha y hora hacia arriba.
+ * @returns {string} La fecha y hora redondeada hacia arriba, en formato DATE_TIME_FORMAT.
  * @throws {Error} Si la fecha de entrada no es válida según el formato DATE_TIME_FORMAT.
  *
  * @example
  * roundDateTime('2023-10-26T14:35', 'month') // retorna '2023-11-01T00:00'
- * roundDateTime('2023-10-26T14:35', 'day')   // retorna '2023-10-26T00:00'
+ * roundDateTime('2023-10-26T14:35', 'day')   // retorna '2023-10-27T00:00'
  * roundDateTime('2023-10-26T14:35', 'hour')  // retorna '2023-10-26T15:00'
  */
 export const roundDateTime = (dateTime: string, unit: 'month' | 'day' | 'hour'): string => {
@@ -308,8 +320,8 @@ export const dateTimeHelp1 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     dateTimeHelp0(msgType)
     myConsole(chalk.bold("   Franja de tiempo por horas.- "),
-        `rango aceptado: -1h a -${max_horas}h, es decir un valor entre\n                           -1 a -${max_horas} horas antes de la fecha y hora de referencia.`)
-    myConsole(`                           rango aceptado: 1h a ${max_horas}h, es decir un valor entre\n                           1 a ${max_horas} horas luego de la fecha y hora de referencia.\n`)
+        `rango aceptado: -1h a -${MAX_HORAS}h, es decir un valor entre\n                           -1 a -${MAX_HORAS} horas antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1h a ${MAX_HORAS}h, es decir un valor entre\n                           1 a ${MAX_HORAS} horas luego de la fecha y hora de referencia.\n`)
     myConsole(chalk.bold("                           Ejemplo 1:\n"))
     myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=\"2024-12-01T02:00;-4h\"   <otros params>\n"))
     myConsole("                           Equivale al filtro de tiempo:")
@@ -335,8 +347,8 @@ export const dateTimeHelp2 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     dateTimeHelp0(msgType)
     myConsole(chalk.bold("   Franja de tiempo por dias.- "),
-        `rango aceptado: -1d a -${max_dias}d, es decir un valor entre\n                           -1 a -${max_dias} dias antes de la fecha y hora de referencia.`)
-    myConsole(`                           rango aceptado: 1d a ${max_dias}d, es decir un valor entre\n                           1 a ${max_dias} dias luego de la fecha y hora de referencia.\n`)
+        `rango aceptado: -1d a -${MAX_DIAS}d, es decir un valor entre\n                           -1 a -${MAX_DIAS} dias antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1d a ${MAX_DIAS}d, es decir un valor entre\n                           1 a ${MAX_DIAS} dias luego de la fecha y hora de referencia.\n`)
     myConsole(chalk.bold("                           Ejemplo 1:\n"))
     myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=\"2024-12-01T02:00;-4d\"   <otros params>\n"))
     myConsole("                           Equivale al filtro de tiempo:")
@@ -362,8 +374,8 @@ export const dateTimeHelp3 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     dateTimeHelp0(msgType)
     myConsole(chalk.bold("   Franja de tiempo por meses.- "),
-        `rango aceptado: -1d a -${max_meses}m, es decir un valor entre\n                           -1 a -${max_meses} meses antes de la fecha y hora de referencia.`)
-    myConsole(`                           rango aceptado: 1d a ${max_meses}m, es decir un valor entre\n                           1 a ${max_meses} meses luego de la fecha y hora de referencia.\n`)
+        `rango aceptado: -1d a -${MAX_MESES}m, es decir un valor entre\n                           -1 a -${MAX_MESES} meses antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1d a ${MAX_MESES}m, es decir un valor entre\n                           1 a ${MAX_MESES} meses luego de la fecha y hora de referencia.\n`)
     myConsole(chalk.bold("                           Ejemplo 1:\n"))
     myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=\"2024-12-01T02:00;-4m\"   <otros params>\n"))
     myConsole("                           Equivale al filtro de tiempo:")
@@ -389,8 +401,8 @@ export const dateTimeHelp4 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     dateTimeHelp0(msgType)
     myConsole(chalk.bold("   Franja de tiempo por años.- "),
-        `rango aceptado: -1d a -${max_anios}a, es decir un valor entre\n                           -1 a -${max_anios} años antes de la fecha y hora de referencia.`)
-    myConsole(`                           rango aceptado: 1d a ${max_anios}a, es decir un valor entre\n                           1 a ${max_anios} años luego de la fecha y hora de referencia.\n`)
+        `rango aceptado: -1d a -${MAX_ANIOS}a, es decir un valor entre\n                           -1 a -${MAX_ANIOS} años antes de la fecha y hora de referencia.`)
+    myConsole(`                           rango aceptado: 1d a ${MAX_ANIOS}a, es decir un valor entre\n                           1 a ${MAX_ANIOS} años luego de la fecha y hora de referencia.\n`)
     myConsole(chalk.bold("                           Ejemplo 1:\n"))
     myConsole(chalk.bold("                           $ loader2 fromAirVisio --from=\"2024-12-01T02:00;-1a\"   <otros params>\n"))
     myConsole("                           Equivale al filtro de tiempo:")

@@ -1,15 +1,24 @@
+// @ts-ignore
+
 import {
     describe,
     it,
     expect
 } from 'vitest';
 
+// @ts-ignore
 import {
     DATE_TIME_FORMAT,
-    max_anios,
-    max_dias,
-    max_horas,
-    max_meses,
+    MAX_ANIOS,
+    MAX_DIAS,
+    MAX_MESES,
+    MAX_HORAS,
+    DEFAULT_MAX_ANIOS_ERROR_MSG,
+    DEFAULT_MAX_MESES_ERROR_MSG,
+    DEFAULT_MAX_DIAS_ERROR_MSG,
+    DEFAULT_MAX_HORAS_ERROR_MSG,
+    INVALID_START_DATE,
+    INVALID_END_DATE,
     computeTimeInterval,
     roundDateTime,
     str2dayjs,
@@ -26,25 +35,37 @@ import type {
     // @ts-ignore
 } from "../src/dateTime";
 
+import {
+    DEFAULT_DATE_TIME_FORMAT_ERROR_MSG,
+    DEFAULT_TIME_FRAME_FORMAT_ERROR
+    // @ts-ignore
+} from "../src/dateTime";
+
+import {PLACEHOLDER} from "../src/commons/console.js";
+
 /**
- * Pruebas para la función str2dayjs
- * Valida la conversión de cadenas de texto a objetos dayjs
+ * Pruebas para la función str2dayjs.
+ * Validar la conversión de cadenas de texto a objetos dayjs.
  */
 describe('str2dayjs', () => {
     it('should format valid date string correctly', () => {
-        const result = str2dayjs('2025-11-19T14:30');
-        expect(result).toBe('2025-11-19T14:30');
+        expect(str2dayjs('2025-11-19T14:30')).toBe('2025-11-19T14:30');
     });
 
     it('should throw error for invalid date format', () => {
         expect(() => str2dayjs('2025-11-19')).toThrow();
-        expect(() => str2dayjs('2025/11-19T14:30')).toThrow();
-        expect(() => str2dayjs('invalid')).toThrow();
     });
 
-    it('should throw error with correct message', () => {
-        expect(() => str2dayjs('invalid'))
-            .toThrow(`--from debe coincidir con el formato ${DATE_TIME_FORMAT}`);
+    it('should throw error for invalid date format', () => {
+        expect(() => str2dayjs('2025/11-19T14:30')).toThrow();
+    });
+
+    it('should throw error for invalid date format', () => {
+        expect(() => str2dayjs('invalid')).toThrow(DEFAULT_DATE_TIME_FORMAT_ERROR_MSG);
+    });
+
+    it('should throw error for invalid date format', () => {
+        expect(() => str2dayjs('invalid',`-F --from ${PLACEHOLDER}`)).toThrow(`-F --from ${DEFAULT_DATE_TIME_FORMAT_ERROR_MSG}`);
     });
 });
 
@@ -55,41 +76,48 @@ describe('str2dayjs', () => {
 describe('timeFrame', () => {
     it('Time frame válido', () => {
         expect(() => timeFrame('invalid'))
-            .toThrow('Formato para expresión de tiempo no válido');
+            .toThrow(DEFAULT_TIME_FRAME_FORMAT_ERROR);
+    });
+
+    it('Time frame no válido para años', () => {
+        expect(() => timeFrame(`${MAX_ANIOS + 2}a`))
+            .toThrow(DEFAULT_MAX_ANIOS_ERROR_MSG);
     });
 
     it('Time frame válido para años', () => {
-        expect(() => timeFrame(`${max_anios + 2}a`))
-            .toThrow(`Si especifica las unidades como a (años), número debe ser máximo ${max_anios}`);
+        const result = timeFrame(`${MAX_ANIOS - 1}a`);
+        expect(result.number).toBe(MAX_ANIOS - 1);
+    });
 
-        const result = timeFrame(`${max_anios - 1}a`);
-        expect(result.number).toBe(max_anios - 1);
+    it('Time frame no válido para meses', () => {
+        expect(() => timeFrame(`${MAX_MESES + 2}m`))
+            .toThrow(DEFAULT_MAX_MESES_ERROR_MSG);
     });
 
     it('Time frame válido para meses', () => {
-        expect(() => timeFrame(`${max_meses + 2}m`))
-            .toThrow(`Si especifica las unidades como m (mes), número debe ser máximo ${max_meses}`);
+        const result = timeFrame(`${MAX_MESES - 1}m`);
+        expect(result.number).toBe(MAX_MESES - 1);
+    });
 
-        const result = timeFrame(`${max_meses - 1}m`);
-        expect(result.number).toBe(max_meses - 1);
+    it('Time frame no válido para días', () => {
+        expect(() => timeFrame(`${MAX_DIAS + 2}d`))
+            .toThrow(DEFAULT_MAX_DIAS_ERROR_MSG);
     });
 
     it('Time frame válido para días', () => {
-        expect(() => timeFrame(`${max_dias + 2}d`))
-            .toThrow(`Si especifica las unidades como d (días), número debe ser máximo ${max_dias}`);
+        const result = timeFrame(`${MAX_DIAS - 1}d`);
+        expect(result.number).toBe(MAX_DIAS - 1);
+    });
 
-        const result = timeFrame(`${max_dias - 1}d`);
-        expect(result.number).toBe(max_dias - 1);
+    it('Time frame no válido para horas', () => {
+        expect(() => timeFrame(`-${MAX_HORAS + 4}h`))
+            .toThrow(DEFAULT_MAX_HORAS_ERROR_MSG);
     });
 
     it('Time frame válido para horas', () => {
-        expect(() => timeFrame(`-${max_horas + 4}h`))
-            .toThrow(`Si especifica las unidades como h (horas), número debe ser máximo ${max_horas}`);
-
-        const result = timeFrame(`-${max_horas - 1}h`);
-        expect(result.number).toBe(max_horas - 1);
+        const result = timeFrame(`-${MAX_HORAS - 1}h`);
+        expect(result.number).toBe(MAX_HORAS - 1);
     });
-
 });
 
 /**
@@ -176,12 +204,14 @@ describe('computeTimeInterval', () => {
  * Verifica el cálculo de diferencias entre intervalos de tiempo
  */
 describe('timeIntervalDiff', () => {
-    it('timeIntervalDiff should throw error for invalid dates', () => {
-        expect(() => timeIntervalDiff({ start: 'invalid', end: '2025-11-20T14:30' }))
-            .toThrow('"start" del intervalo de tiempo no es válido');
+    it('timeIntervalDiff should throw error for invalid start date', () => {
+        expect(() => timeIntervalDiff(<ITimeInterval>{ start: 'invalid', end: '2025-11-20T14:30' }))
+            .toThrow(INVALID_START_DATE);
+    });
 
-        expect(() => timeIntervalDiff({ start: '2025-11-19T14:30', end: 'invalid' }))
-            .toThrow('"end" del intervalo de tiempo no es válido');
+    it('timeIntervalDiff should throw error for invalid end date', () => {
+        expect(() => timeIntervalDiff(<ITimeInterval>{ start: '2025-11-19T14:30', end: 'invalid' }))
+            .toThrow(INVALID_END_DATE);
     });
 
     it('timeIntervalDiff start < end', () => {
@@ -201,7 +231,6 @@ describe('timeIntervalDiff', () => {
             minutes: 1,
         });
     });
-
 })
 
 /**

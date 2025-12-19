@@ -1,4 +1,10 @@
 /**
+ * Un place holder cualquiera que funciona dentro de una cadena de caracteres con propósito warever
+ * Por ejemplo "mi nombre es ..."
+ */
+export const PLACEHOLDER = '[...]'
+
+/**
  * Constante para mensajes de tipo log (registro)
  */
 export const LOG_MESSAGE: string = "log"
@@ -29,7 +35,6 @@ export type TConsoleMessageType = typeof INFO_MESSAGE | typeof LOG_MESSAGE | typ
  * @returns {Function} Función de consola correspondiente al tipo de mensaje
  */
 export const fnConsole = (msgType: TConsoleMessageType = INFO_MESSAGE) : Function => {
-    // const myConsole =
     return {
         INFO_MESSAGE: console.info,
         LOG_MESSAGE: console.log,
