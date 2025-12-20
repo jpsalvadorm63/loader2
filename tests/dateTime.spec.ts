@@ -197,6 +197,26 @@ describe('computeTimeInterval', () => {
             end: '2025-11-19T14:30',
         });
     });
+
+    it('computeTimeInterval -1 año com timeFrame', () => {
+        const result = computeTimeInterval('2025-11-19T14:30', "-1a");
+        expect(result).toEqual(<ITimeInterval>{
+            start: '2024-11-19T14:30',
+            end: '2025-11-19T14:30',
+        });
+    });
+
+    it('computeTimeInterval +24 horas de timeFrame', () => {
+        const result = computeTimeInterval('2025-12-19T14:30', "+20h");
+        expect(result).toEqual(<ITimeInterval>{
+            start: '2025-12-19T14:30',
+            end: '2025-12-20T10:30',
+        });
+    });
+
+    it('computeTimeInterval +1 mes con error', () => {
+        expect(() => computeTimeInterval('2025-12-19T14:30', "xy")).toThrow(DEFAULT_TIME_FRAME_FORMAT_ERROR);
+    });
 })
 
 /**

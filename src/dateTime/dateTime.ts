@@ -36,15 +36,15 @@ import {
 dayjs.extend(customParseFormat);
 
 /**
- * Formats the current date and time using the specified global date-time format.
+ * Formatea la fecha y hora actual utilizando el formato de fecha y hora global especificado.
  *
- * The `formatNow` function utilizes the `dayjs` library to retrieve and format the
- * current date and time. It applies the format described by the `DATE_TIME_FORMAT`
- * constant to ensure consistency across all date-time outputs.
+ * La función `formatNow` utiliza la biblioteca `dayjs` para obtener y formatear la
+ * fecha y hora actual. Aplica el formato descrito por la constante `DATE_TIME_FORMAT`
+ * para garantizar consistencia en todas las salidas de fecha y hora.
  *
  * @function
- * @returns {string} A string representing the current date and time in the
- *                   specified `DATE_TIME_FORMAT`.
+ * @returns {string} Una cadena que representa la fecha y hora actual en el
+ *                   formato `DATE_TIME_FORMAT` especificado.
  */
 export const formatNow = () => dayjs().format(DATE_TIME_FORMAT);
 
@@ -131,29 +131,31 @@ export const timeFrame = (value: string): ITimeExpression => {
  * Calcula el intervalo de tiempo resultante de aplicar una expresión de tiempo a una fecha dada.
  *
  * @param {string} dateTime - La fecha y hora base en formato string.
- * @param {ITimeExpression} te - La expresión de tiempo que contiene la cantidad, unidad y dirección (signo) a aplicar.
+ * @param {ITimeExpression} te - es un string que representa un time frame (-24h, +2a, +3m) o una expresión de tiempo que contiene la cantidad, unidad y dirección (signo) a aplicar.
  * @returns {ITimeInterval} Un objeto que contiene la fecha de inicio y fin del intervalo calculado.
  * @throws {Error} Si la fecha base no es válida según el formato esperado.
  * @throws {Error} Si la unidad de tiempo en la expresión no es reconocida.
  */
-export const computeTimeInterval = (dateTime: string, te: ITimeExpression): ITimeInterval => {
+export const computeTimeInterval = (dateTime: string, te: string | ITimeExpression): ITimeInterval => {
     const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
     if (!parsed.isValid()) {
-        throw new Error(`computeDates(), ${dateTime} no coincide con el formato ${DATE_TIME_FORMAT}`);
+        throw new Error(`computeTimeInterval(), la fecha base "${dateTime}" ${DEFAULT_DATE_TIME_FORMAT_ERROR_MSG}`);
     }
 
+    const timeExpression : ITimeExpression = (typeof te) === 'string' ? timeFrame(te) : <ITimeExpression>te;
+
     let unit: 'hour' | 'day' | 'month' | 'year';
-    switch (te.unit) {
+    switch (timeExpression.unit) {
         case 'h': unit = 'hour'; break;
         case 'd': unit = 'day'; break;
         case 'm': unit = 'month'; break;
         case 'a': unit = 'year'; break;
-        default: throw new Error(`Unidad desconocida: ${te.unit}`);
+        default: throw new Error(`Unidad desconocida: ${timeExpression.unit}`);
     }
 
-    const targetDate = te.sign === '+'
-        ? parsed.add(te.number, unit)
-        : parsed.subtract(te.number, unit);
+    const targetDate = timeExpression.sign === '+'
+        ? parsed.add(timeExpression.number, unit)
+        : parsed.subtract(timeExpression.number, unit);
 
     const startDate = parsed.isBefore(targetDate) ? parsed : targetDate;
     const endDate = parsed.isBefore(targetDate) ? targetDate : parsed;
