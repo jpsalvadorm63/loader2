@@ -1,6 +1,6 @@
 {
   "name": "loader2",
-  "version": "1.0.0",
+  "version": "(c) OptimGeek 2026 0.7.5.\nDesign by V. Díaz. Develop by JP Salvador",
   "description": "",
   "main": "dist/index.js",
   "type": "module",
@@ -22,7 +22,8 @@
     "build:auto": "nodemon --watch src --ext ts,tsx,json --exec \"npm run build\" && npm link",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "dev:watch": "tsx watch src/index.ts"
+    "dev:watch": "tsx watch src/index.ts",
+    "docs": "typedoc"
   },
   "keywords": [],
   "author": "",
@@ -40,10 +41,20 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@types/pg": "^8.15.6",
     "@vitest/coverage-v8": "^4.0.10",
+    "clean-jsdoc-theme": "^4.3.0",
+    "jsdoc": "^4.0.5",
+    "jsdoc-babel": "^0.5.0",
     "nodemon": "^3.1.11",
     "tsx": "^4.20.6",
+    "typedoc": "^0.28.15",
+    "typedoc-material-theme": "^1.4.1",
+    "typedoc-neo-theme": "^1.1.1",
+    "typedoc-theme-hierarchy": "^6.0.0",
     "vitest": "^4.0.10"
   }
 }

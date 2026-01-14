@@ -1,4 +1,8 @@
 export {
+    packageJson
+} from './packageJson.js'
+
+export {
     wait,
     clearScreen
 } from './keyb.js'

@@ -36,7 +36,7 @@ export const reviewMagnitude = (magnitude: string): boolean => {
  */
 export const validMagnitudes = (simple: boolean = true) => {
     return simple
-        ? MAGNITUDES.map(m => m.airVisio).join(', ')
+        ? MAGNITUDES.map(m => m.airVisio).join(',')
         : MAGNITUDES.map(m => ({nombre: m.nombre, airVisio: m.airVisio}));
 }
 

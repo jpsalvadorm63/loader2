@@ -24,7 +24,7 @@ import {
     str2dayjs,
     timeFrame,
     timeIntervalDiff,
-    truncDateTime
+    truncDateTime, DEFAULT_TIME_FRAME
     // @ts-ignore
 } from "../src/dateTime";
 
@@ -37,7 +37,7 @@ import type {
 
 import {
     DEFAULT_DATE_TIME_FORMAT_ERROR_MSG,
-    DEFAULT_TIME_FRAME_FORMAT_ERROR
+    DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG
     // @ts-ignore
 } from "../src/dateTime";
 
@@ -76,7 +76,7 @@ describe('str2dayjs', () => {
 describe('timeFrame', () => {
     it('Time frame válido', () => {
         expect(() => timeFrame('invalid'))
-            .toThrow(DEFAULT_TIME_FRAME_FORMAT_ERROR);
+            .toThrow(DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG);
     });
 
     it('Time frame no válido para años', () => {
@@ -117,6 +117,16 @@ describe('timeFrame', () => {
     it('Time frame válido para horas', () => {
         const result = timeFrame(`-${MAX_HORAS - 1}h`);
         expect(result.number).toBe(MAX_HORAS - 1);
+    });
+
+    it('Time frame válido para nulos', () => {
+        const result = timeFrame(null);
+        expect(result).toStrictEqual(timeFrame(DEFAULT_TIME_FRAME));
+    });
+
+    it('Time frame válido para vacíos', () => {
+        const result = timeFrame('');
+        expect(result).toStrictEqual(timeFrame(DEFAULT_TIME_FRAME));
     });
 });
 
@@ -215,7 +225,7 @@ describe('computeTimeInterval', () => {
     });
 
     it('computeTimeInterval +1 mes con error', () => {
-        expect(() => computeTimeInterval('2025-12-19T14:30', "xy")).toThrow(DEFAULT_TIME_FRAME_FORMAT_ERROR);
+        expect(() => computeTimeInterval('2025-12-19T14:30', "xy")).toThrow(DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG);
     });
 })
 

@@ -12,7 +12,10 @@ import {
     DEFAULT_MAX_DIAS_ERROR_MSG,
     DEFAULT_MAX_MESES_ERROR_MSG,
     DEFAULT_MAX_ANIOS_ERROR_MSG,
-    DEFAULT_DATE_TIME_FORMAT_ERROR_MSG, DEFAULT_TIME_FRAME_FORMAT_ERROR
+    DEFAULT_DATE_TIME_FORMAT_ERROR_MSG, 
+    DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG,
+    DEFAULT_TIME_FRAME,
+    DEFAULT_DEFAULT_TIME_FRAME_ERROR_MSG,
 } from "./dateTime.constants.js";
 
 import {
@@ -38,7 +41,7 @@ dayjs.extend(customParseFormat);
 /**
  * Formatea la fecha y hora actual utilizando el formato de fecha y hora global especificado.
  *
- * La función `formatNow` utiliza la biblioteca `dayjs` para obtener y formatear la
+ * La función `THIS_MOMENT` utiliza la biblioteca `dayjs` para obtener y formatear la
  * fecha y hora actual. Aplica el formato descrito por la constante `DATE_TIME_FORMAT`
  * para garantizar consistencia en todas las salidas de fecha y hora.
  *
@@ -46,7 +49,7 @@ dayjs.extend(customParseFormat);
  * @returns {string} Una cadena que representa la fecha y hora actual en el
  *                   formato `DATE_TIME_FORMAT` especificado.
  */
-export const formatNow = () => dayjs().format(DATE_TIME_FORMAT);
+export const THIS_MOMENT = () => dayjs().format(DATE_TIME_FORMAT);
 
 /**
  * Confirma que una cadena de texto esté en formato fecha/hora DATE_TIME_FORMAT
@@ -68,6 +71,7 @@ export const str2dayjs = (value: string, errorMsg: string = DEFAULT_DATE_TIME_FO
     const parsed = dayjs(value, DATE_TIME_FORMAT, true); // modo estricto
     if (!parsed.isValid()) {
         const formattedErrorMessage = errorMsg.includes(PLACEHOLDER) ? errorMsg.replace(PLACEHOLDER, DEFAULT_DATE_TIME_FORMAT_ERROR_MSG) : errorMsg;
+        // todo, borrar cuando no se necesita. console.log('::::::::: ', formattedErrorMessage)
         throw new Error(formattedErrorMessage);
     } else
         return parsed.format(DATE_TIME_FORMAT);
@@ -98,15 +102,20 @@ export const timeFrame = (value: string): ITimeExpression => {
     // (\d*)      → optional number (0 or more digits) default 3
     // ([hdma])?  → final character (one letter) default h
     const regex = /^([+-])?(\d*)([hdma])?$/;
-    const match = value.match(regex);
 
+    const match = (value === null || value === '' ) ? [null, null,null] : value.match(regex);
     if (!match) {
-        throw new Error(DEFAULT_TIME_FRAME_FORMAT_ERROR);
+        throw new Error(DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG);
     }
 
-    const sign = match[1] || "-";
-    const number = parseInt(match[2] || "3", 10);
-    const unit = match[3] || "h";
+    const matchDEFAULT = DEFAULT_TIME_FRAME.match(regex);
+    if (!matchDEFAULT) {
+        throw new Error(DEFAULT_DEFAULT_TIME_FRAME_ERROR_MSG);
+    }
+
+    const sign = match[1] || matchDEFAULT[1];
+    const number = parseInt(match[2] || matchDEFAULT[2],10);
+    const unit = match[3] || matchDEFAULT[3];
 
     if (unit === "h" && number > MAX_HORAS) {
         throw new Error(DEFAULT_MAX_HORAS_ERROR_MSG);
@@ -137,13 +146,12 @@ export const timeFrame = (value: string): ITimeExpression => {
  * @throws {Error} Si la unidad de tiempo en la expresión no es reconocida.
  */
 export const computeTimeInterval = (dateTime: string, te: string | ITimeExpression): ITimeInterval => {
+
     const parsed = dayjs(dateTime, DATE_TIME_FORMAT, true);
     if (!parsed.isValid()) {
         throw new Error(`computeTimeInterval(), la fecha base "${dateTime}" ${DEFAULT_DATE_TIME_FORMAT_ERROR_MSG}`);
     }
-
     const timeExpression : ITimeExpression = (typeof te) === 'string' ? timeFrame(te) : <ITimeExpression>te;
-
     let unit: 'hour' | 'day' | 'month' | 'year';
     switch (timeExpression.unit) {
         case 'h': unit = 'hour'; break;
@@ -152,7 +160,6 @@ export const computeTimeInterval = (dateTime: string, te: string | ITimeExpressi
         case 'a': unit = 'year'; break;
         default: throw new Error(`Unidad desconocida: ${timeExpression.unit}`);
     }
-
     const targetDate = timeExpression.sign === '+'
         ? parsed.add(timeExpression.number, unit)
         : parsed.subtract(timeExpression.number, unit);
@@ -431,7 +438,7 @@ export const dateTimeHelp5 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     dateTimeHelp0(msgType)
     myConsole(chalk.bold("    Si no se especifica níngún parámetro -F o --from .- "))
     myConsole("                           Fecha y hora de referencia por defecto, la actual:")
-    myConsole(chalk.bold(`                           (${formatNow()})\n`))
+    myConsole(chalk.bold(`                           (${THIS_MOMENT()})\n`))
     myConsole("                           Franja de tiempo por defecto:")
     myConsole(chalk.bold(`                           -3h, -3 horas\n`))
 }

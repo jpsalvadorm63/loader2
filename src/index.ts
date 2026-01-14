@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import dayjs from 'dayjs';
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
-import { Command } from "commander";
-import { str2dayjs } from "./dateTime/index.js";
-import { DATE_TIME_FORMAT } from "./dateTime/index.js";
+import { Command, Option } from "commander";
+import {DATE_TIME_FORMAT, DEFAULT_TIME_FRAME} from "./dateTime/index.js";
 import {
-    formatNow
+    THIS_MOMENT
 } from "./dateTime/dateTime.js";
-import {paramsHelp} from "./parameters/params.js";
-import {validParamsHelp} from "./command.validParams.js";
-import {commandFrom} from "./command.from.js";
+import {packageJson} from "./commons/index.js";
+import {commandFrom} from "./commands/index.js";
+import {validParamsHelp} from "./commands/index.js";
+import {validateMagnitudes, validMagnitudes} from "./parameters/index.js";
 
 dayjs.locale('es');
 
@@ -17,25 +17,40 @@ dayjs.extend(customParseFormat);
 
 const program = new Command();
 
+// Mostrar ayuda si no se pasa ningún argumento
+if (process.argv.length <= 2) {
+    program.outputHelp();
+    process.exit(0);
+}
+
 program
     .name('loader2')
     .description('CLI para transferencia de datos desde AirVisio system al sistema Remmaq Visor')
-    .version('0.0.3');
+    .version(packageJson.version);
 
 program
     .command('fromAirVisio')
     .description('Descarga de datos')
-    .option(
-        '-F,--from <datetime;frameTime>',
-        `Fecha en formato "${DATE_TIME_FORMAT}" y frama de tiempo por ejemplo -24h unidos por punto y com, ${formatNow()};-24h`,
-        commandFrom,
-        commandFrom(`${formatNow()};-3h'`)
+    .addOption(
+        new Option(
+            '-F,--from <fecha;franjaDeTiempo>',
+            `Fecha en formato "${DATE_TIME_FORMAT}" y franja de tiempo por ejemplo -24h unidos por punto y coma, --from="${THIS_MOMENT()};-24h" `
+        )
+            .argParser(commandFrom)
+            .default(
+                commandFrom(`${THIS_MOMENT()};${DEFAULT_TIME_FRAME}`),
+                `"fecha:hora actual;${DEFAULT_TIME_FRAME}"`
+            )
     )
-    // .option(
-    //     '-M,--magnitudes <magnitudes>',
-    //     `magnitudes válidas, una o mas entre "${validMagnitudes()}"`,
-    //     (magnitudes) => reviewMagnitudes(magnitudes)
-    // )
+    .addOption(
+        new Option(
+            '-M,--magnitudes <lista de Magnitudes>',
+            `Lista de magnitudes separadas por comas Por lo general es una sublista de: ${validMagnitudes()} `
+        )
+            .argParser(validateMagnitudes)
+            .makeOptionMandatory(true)
+            .default(undefined, `lista de magnitudes no puede quedar vacía. Debe ser una sublista de: ${validMagnitudes()}`)
+    )
     .action(props => {
         console.log('>> ', props);
     });
@@ -45,4 +60,4 @@ program
     .description('Parámetros válidos para comando "loader2 airVisio"')
     .action(validParamsHelp)
 
-program.parseAsync();
+program.parseAsync().then(null);

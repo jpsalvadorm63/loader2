@@ -1,3 +1,7 @@
+export {
+
+}
+
 /**
  * Constantes exportadas:
  * - DATE_TIME_FORMAT: Formato estándar de fecha y hora
@@ -14,12 +18,14 @@ export {
     MAX_DIAS,
     MAX_HORAS,
     MAX_MESES,
-    DEFAULT_TIME_FRAME_FORMAT_ERROR,
+    DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG,
     DEFAULT_DATE_TIME_FORMAT_ERROR_MSG,
     DEFAULT_MAX_ANIOS_ERROR_MSG,
     DEFAULT_MAX_DIAS_ERROR_MSG,
     DEFAULT_MAX_HORAS_ERROR_MSG,
     DEFAULT_MAX_MESES_ERROR_MSG,
+    DEFAULT_TIME_FRAME,
+    DEFAULT_DEFAULT_TIME_FRAME_ERROR_MSG
 } from './dateTime.constants.js';
 
 /**
@@ -32,6 +38,7 @@ export {
  * - roundDateTime: Redondea una fecha y hora
  */
 export {
+    THIS_MOMENT,
     str2dayjs,
     timeFrame,
     computeTimeInterval,

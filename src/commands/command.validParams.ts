@@ -1,8 +1,8 @@
-import {clearScreen, wait} from "./commons/index.js";
-import {paramsHelp} from "./parameters/params.js";
-import {dateTimeHelp1, dateTimeHelp2, dateTimeHelp3, dateTimeHelp4, dateTimeHelp5} from "./dateTime/dateTime.js";
-import {magnitudesHelp, opointsHelp} from "./parameters/index.js";
-import {intervalsHelp} from "./parameters/params.intervals.js";
+import {clearScreen, wait} from "../commons/index.js";
+import {paramsHelp} from "../parameters/params.js";
+import {dateTimeHelp1, dateTimeHelp2, dateTimeHelp3, dateTimeHelp4, dateTimeHelp5} from "../dateTime/dateTime.js";
+import {magnitudesHelp, opointsHelp} from "../parameters/index.js";
+import {intervalsHelp} from "../parameters/params.intervals.js";
 
 
  export const validParamsHelp = async () => {

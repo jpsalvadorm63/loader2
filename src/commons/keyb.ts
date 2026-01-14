@@ -10,10 +10,37 @@ export const clearScreen = () => {
     // process.stdout.write('\x1B[2J\x1B[0f');  // clear + home
 }
 
+
 /**
- * Espera a que el usuario presione Enter para continuar o 'q' para salir
- * @param {string} waitingMessage - Mensaje a mostrar al usuario (por defecto 'Press Enter to continue or q to quit...')
- * @returns {Promise<void>} Promesa que se resuelve cuando el usuario presiona Enter o termina el proceso si presiona 'q'
+ * Pausa la ejecución y espera la interacción del usuario mediante la entrada de consola.
+ *
+ * Esta función crea una interfaz de lectura que espera a que el usuario presione Enter para continuar
+ * o ingrese 'q' para salir del programa. Opcionalmente puede limpiar la pantalla antes de continuar.
+ *
+ * @param {string} waitingMessage - Mensaje que se mostrará al usuario mientras espera.
+ *                                   Por defecto: 'Press Enter to continue or q to quit...'
+ * @param {boolean} clearScreenBefore - Si es true, limpia la pantalla antes de continuar después de
+ *                                       que el usuario presione Enter. Por defecto: false
+ *
+ * @returns {Promise<void>} Promesa que se resuelve cuando el usuario presiona Enter o termina
+ *                          el proceso si ingresa 'q'.
+ *
+ * @example
+ * // Espera con mensaje por defecto
+ * await wait();
+ *
+ * @example
+ * // Espera con mensaje personalizado
+ * await wait('Presiona Enter para descargar datos...');
+ *
+ * @example
+ * // Espera y limpia la pantalla antes de continuar
+ * await wait('Presiona Enter para continuar...', true);
+ *
+ * @example
+ * // El usuario puede salir del programa ingresando 'q'
+ * await wait('Enter para continuar, q para salir');
+ * // Si el usuario ingresa 'q' o 'Q', el proceso termina con process.exit(0)
  */
 export const wait = async (
     waitingMessage: string = 'Press Enter to continue or q to quit...',

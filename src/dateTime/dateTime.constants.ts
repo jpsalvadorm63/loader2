@@ -11,7 +11,7 @@ export const INVALID_START_DATE = '"start" del intervalo de tiempo no es válido
 /**
  * Mensaje de error por defecto que se muestra cuando el formato de una expresión de tiempo (por ejemplo, -24f, +3d, -1a) no es válida
  */
-export const DEFAULT_TIME_FRAME_FORMAT_ERROR = 'Formato para expresión de tiempo no válido'
+export const DEFAULT_TIME_FRAME_FORMAT_ERROR_MSG = 'Formato para expresión de tiempo no válido'
 
 /**
  * Formato de fecha y hora utilizado en la aplicación y aceptada por la API de AirVisio
@@ -69,3 +69,15 @@ export const MAX_HORAS = MAX_DIAS*24
  * definido en MAX_HORAS
  */
 export const DEFAULT_MAX_HORAS_ERROR_MSG = `El intervalo de tiempo no puede ser mayor que ${MAX_HORAS} horas`
+
+/**
+ * Marco de tiempo por defecto utilizado cuando no se especifica uno explícitamente
+ * El valor '-3h' representa las últimas 3 horas desde el momento actual
+ */
+export const DEFAULT_TIME_FRAME = '-3h'
+
+/**
+ * Mensaje de error que se muestra cuando la constante DEFAULT_TIME_FRAME está mal definida
+ * o no cumple con el formato válido de expresión de tiempo
+ */
+export const DEFAULT_DEFAULT_TIME_FRAME_ERROR_MSG = `La constante DEFAULT_TIME_FRAME = ${DEFAULT_TIME_FRAME}, está mal definida`
