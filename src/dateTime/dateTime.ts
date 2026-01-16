@@ -307,7 +307,7 @@ export const dateTimeHelp0 = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     const myConsole = fnConsole(msgType);
     myConsole('\n-----')
     myConsole(chalk.rgb(173, 216, 230).bold.underline("Franja de tiempo para la extracción de datos desde el sistema AirVisio\nen la línea de comandos.\n"))
-    myConsole(chalk.bold("-F o --from"), chalk.bold(" <fecha de referencia;franja de tiempo>       (parámetro no obligatorio)\n"))
+    myConsole(chalk.bold("-F o --from"), chalk.bold(" \"<fecha de referencia;franja de tiempo>\"       (parámetro no obligatorio)\n"))
     myConsole("Sirve para especificar la ", chalk.bold("<fecha de referencia>"), " desde la cual (o hasta la cual)\naplicar una", chalk.bold("<franja de tiempo>"),
         " suficientes para calcular una fecha inicial y una fecha\nfinal, que establecen el", chalk.bold("filtro de tiempo"), "para extraer los datos del sistema visor.\n")
     myConsole(chalk.bold("    <fecha de referencia>"), ` se especifica con el formato ${DATE_TIME_FORMAT}.\n                           Por ejemplo: 2021-12-31T05:10\n`)

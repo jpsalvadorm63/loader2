@@ -114,6 +114,6 @@ export const opointsHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     myConsole(chalk.black.bold(' visor    .- Código de la estación en el sistema RemmaqVisor'))
     myConsole(chalk.blue("\n Las magnitudes se especifican con '-E ' o con '--estaciones='"))
     myConsole(chalk.blue("   seguido de una lista de 'códigos airVisio' separados por comas.\n"))
-    myConsole(chalk.blue("\nEjemplos:\n\n$ "), chalk.bold("loader2 fromAirVisio --estaciones=Belizario,Carapungo,Centro"))
-    myConsole(chalk.blue("\n$ "), chalk.bold("loader2 fromAirVisio -E Belizario,Carapungo,Centro\n"))
+    myConsole(chalk.blue("\nEjemplos:\n\n$ "), chalk.bold("loader2 fromAirVisio --estaciones=\"Belizario,Carapungo,Centro\""))
+    myConsole(chalk.blue("\n$ "), chalk.bold("loader2 fromAirVisio -E \"Belizario,Carapungo,Centro\"\n"))
 }

@@ -113,6 +113,6 @@ export const magnitudesHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     myConsole(chalk.black.bold(' visor    .- Código de la magnitud en el sistema RemmaqVisor'))
     myConsole(chalk.blue("\n Las magnitudes se especifican con '-M ' o con '--magnitudes='"))
     myConsole(chalk.blue("   seguido de una lista de'códigos airVisio' separados por comas.\n"))
-    myConsole(chalk.blue("\nEjemplos:\n\n$ "), chalk.bold("loader2 fromAirVisio --magnitudes=PM2.5_ug,TEMP_AMB,DIR_VEC"))
-    myConsole(chalk.blue("\n$ "), chalk.bold("loader2 fromAirVisio -M PM2.5_ug,TEMP_AMB,DIR_VEC\n"))
+    myConsole(chalk.blue("\nEjemplos:\n\n$ "), chalk.bold("loader2 fromAirVisio --magnitudes=\"PM2.5_ug,TEMP_AMB,DIR_VEC\""))
+    myConsole(chalk.blue("\n$ "), chalk.bold("loader2 fromAirVisio -M \"PM2.5_ug,TEMP_AMB,DIR_VEC\"\n"))
 }
