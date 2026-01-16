@@ -9,7 +9,10 @@ import {
 import {packageJson} from "./commons/index.js";
 import {commandFrom} from "./commands/index.js";
 import {validParamsHelp} from "./commands/index.js";
-import {validateMagnitudes, validMagnitudes} from "./parameters/index.js";
+import {validMagnitudes, magnitudesHelp} from "./parameters/index.js";
+import chalk from "chalk";
+import {commandMagnitudes} from "./commands/command.magnitudes.js";
+import {magnitudes2array} from "./parameters/params.magnitudes.js";
 
 dayjs.locale('es');
 
@@ -28,6 +31,7 @@ program
     .description('CLI para transferencia de datos desde AirVisio system al sistema Remmaq Visor')
     .version(packageJson.version);
 
+// @ts-ignore
 program
     .command('fromAirVisio')
     .description('Descarga de datos')
@@ -37,6 +41,7 @@ program
             `Fecha en formato "${DATE_TIME_FORMAT}" y franja de tiempo por ejemplo -24h unidos por punto y coma, --from="${THIS_MOMENT()};-24h" `
         )
             .argParser(commandFrom)
+            .makeOptionMandatory(false)
             .default(
                 commandFrom(`${THIS_MOMENT()};${DEFAULT_TIME_FRAME}`),
                 `"fecha:hora actual;${DEFAULT_TIME_FRAME}"`
@@ -45,13 +50,18 @@ program
     .addOption(
         new Option(
             '-M,--magnitudes <lista de Magnitudes>',
-            `Lista de magnitudes separadas por comas Por lo general es una sublista de: ${validMagnitudes()} `
+            `Lista de magnitudes separadas por comas Por lo general es una sublista de: ${validMagnitudes().join(',')}`
         )
-            .argParser(validateMagnitudes)
-            .makeOptionMandatory(true)
-            .default(undefined, `lista de magnitudes no puede quedar vacía. Debe ser una sublista de: ${validMagnitudes()}`)
+            .makeOptionMandatory(false)
+            .argParser(commandMagnitudes)
     )
     .action(props => {
+
+        // se ejecuta cuando no se ha colocado e argumento -M --magnitudes
+        if (!props.magnitudes) {
+            commandMagnitudes(null)
+        }
+
         console.log('>> ', props);
     });
 

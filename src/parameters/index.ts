@@ -1,8 +1,8 @@
 
 
 export {
-    NONEPARAM,
-    ALLPARAM,
+    NONE,
+    ALL,
     MAGNITUDES,
     OPOINTS,
 } from "./configs/params.constants.js"

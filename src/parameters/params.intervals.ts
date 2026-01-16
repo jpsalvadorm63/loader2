@@ -1,6 +1,6 @@
 import {
     // ALLPARAM,
-    NONEPARAM,
+    NONE,
     IIntervals
 } from "./configs/params.constants.js";
 
@@ -49,7 +49,7 @@ export const validIntervals = (simple: boolean = true) => {
  * @throws {Error} Si no se especificó un intervalo o si el intervalo no es válido
  */
 export const validateIntervals = (interval: string): boolean => {
-    if (interval === NONEPARAM) {
+    if (interval === NONE) {
         throw new Error("No se ha especificado un intervalo");
     }
 

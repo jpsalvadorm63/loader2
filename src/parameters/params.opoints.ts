@@ -1,6 +1,6 @@
 import {
-    ALLPARAM,
-    NONEPARAM,
+    ALL,
+    NONE,
     OPOINTS
 } from "./configs/params.constants.js";
 
@@ -52,10 +52,10 @@ export const validOpoints = (simple: boolean = true) => {
  * @throws {Error} Si no se especificó ningún punto de observación o si alguno de los puntos no es válido
  */
 export const validateOpoints = (opoints: string): boolean => {
-    if (opoints === NONEPARAM) {
+    if (opoints === NONE) {
         throw new Error("No se ha especificado uno o más puntos de observación separadas por coma");
     }
-    if (opoints === ALLPARAM) {
+    if (opoints === ALL) {
         return true
     }
     opoints.split(',').forEach((opoint : string) => {

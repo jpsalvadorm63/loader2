@@ -3,12 +3,12 @@ import {IInterval, IMagnitude, IOpoint} from "./params.interfaces.js";
 /**
  * Se utiliza como parámetro por default cuando no se pasa parámetro alguno
  */
-export const NONEPARAM = 'NONEPARAM'
+export const NONE = 'NONE'
 
 /**
  * Se utiliza como parámetro por decir que pasan todos los elementos de una lista
  */
-export const ALLPARAM = 'ALL'
+export const ALL = 'ALL'
 
 /**
  * Lista de magnitudes medidas por las estaciones de monitoreo de calidad del aire.
