@@ -90,7 +90,7 @@ const table = new Table({
 });
 
 /**
- * Genera una tabla con información de los puntos de observación disponibles
+ * Genera una tabla con información de los puntos de observación disponibles o estaciones
  * @returns Objeto Table con los puntos de observación formateados (nombre, código airVisio y código visor)
  */
 export const opointsTable = () => {
