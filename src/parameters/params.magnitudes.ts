@@ -30,79 +30,93 @@ export const reviewMagnitude = (magnitude: string): boolean => {
 }
 
 /**
- * Obtiene la lista de magnitudes válidas disponibles en el sistema
- *
- * Esta función sobrecargada puede retornar las magnitudes en formato simple (solo códigos airVisio)
- * o en formato completo (objetos con nombre y código airVisio).
- *
- * @param {true} [simple] - Si es true o no se especifica, retorna array de strings con códigos airVisio
- * @returns {string[]} Array de códigos airVisio cuando simple es true
- *
- * @overload
- * @param {false} simple - Si es false, retorna array de objetos con nombre y código airVisio
- * @returns {{ nombre: string; airVisio: string }[]} Array de objetos con información completa de magnitudes
- *
- * @example
- * // Retorna array simple de códigos: ['PM2.5_ug', 'TEMP_AMB', 'DIR_VEC', ...]
- * validMagnitudes()
- * validMagnitudes(true)
- *
- * @example
- * // Retorna array de objetos con información completa:
- * // [{ nombre: 'Partículas PM2.5', airVisio: 'PM2.5_ug' }, ...]
- * validMagnitudes(false)
+ * Obtiene una lista simple de códigos airVisio de todas las magnitudes
+ * @returns Array de strings con los códigos airVisio
  */
-export function validMagnitudes(simple?: true): string[];
-export function validMagnitudes(simple: false): { nombre: string; airVisio: string }[];
-export function validMagnitudes(simple: boolean = true): string[] | { nombre: string; airVisio: string }[] {
-    return simple
-        ? MAGNITUDES.map(m => m.airVisio)
-        : MAGNITUDES.map(m => ({nombre: m.nombre, airVisio: m.airVisio}));
+export function getSimpleMagnitudes(): string[] {
+    return MAGNITUDES.map(({ airVisio }) => airVisio);
+}
+
+/** Representa una magnitud con nombre y código airVisio */
+type MagnitudeSummary = Pick<IMagnitude, 'nombre' | 'airVisio'>;
+
+/**
+ * Obtiene una lista detallada con nombre y código airVisio de todas las magnitudes
+ * @returns Array de objetos MagnitudeSummary con nombre y airVisio
+ */
+export function getDetailedMagnitudes(): MagnitudeSummary[] {
+    return MAGNITUDES.map(({nombre, airVisio}): MagnitudeSummary => ({nombre, airVisio,}));
 }
 
 /**
- * Convierte una cadena de magnitudes en un array de códigos de magnitudes válidos
- * @param magnitudes - Cadena con magnitudes separadas por comas, 'ALL' para todas las magnitudes, o null
- * @returns Array de códigos de magnitudes válidos en formato airVisio
- * @throws {Error} Termina el proceso si no se especifican magnitudes válidas
+ * Convierte una cadena de magnitudes en un array de códigos airVisio válidos
+ *
+ * Esta función procesa una cadena que contiene magnitudes separadas por comas,
+ * valida que todas sean magnitudes reconocidas en el sistema, y retorna un array
+ * con los códigos airVisio correspondientes. Si se especifica 'ALL', retorna todas
+ * las magnitudes disponibles. Si la entrada es inválida, termina el proceso con error.
+ *
+ * @param {string | null} magnitudes - Cadena con magnitudes separadas por comas,
+ *                                      'ALL' para todas las magnitudes, NONE, cadena vacía o null
+ * @returns {string[]} Array de strings con los códigos airVisio de las magnitudes válidas
+ *
+ * @throws {Error} Termina el proceso con código 1 si:
+ *                 - No se especifica ninguna magnitud (null, NONE o cadena vacía)
+ *                 - Se incluye una magnitud no válida en la lista
+ *
  * @example
- * // Retorna todas las magnitudes disponibles
+ * // Uso con magnitudes específicas válidas
+ * magnitudes2array('PM2.5_ug,TEMP_AMB')
+ * // Retorna: ['PM2.5_ug', 'TEMP_AMB']
+ *
+ * @example
+ * // Uso con 'ALL' para obtener todas las magnitudes
  * magnitudes2array('ALL')
+ * // Muestra mensaje en consola y retorna: ['PM2.5_ug', 'TEMP_AMB', 'DIR_VEC', ...]
  *
  * @example
- * // Retorna array con magnitudes específicas
- * magnitudes2array('PM2.5_ug,TEMP_AMB,DIR_VEC')
- * // Retorna: ['PM2.5_ug', 'TEMP_AMB', 'DIR_VEC']
+ * // Uso con magnitudes con espacios (se normalizan)
+ * magnitudes2array(' PM2.5_ug , TEMP_AMB ')
+ * // Retorna: ['PM2.5_ug', 'TEMP_AMB']
  *
  * @example
- * // Error si no se especifica ninguna magnitud
+ * // Error: entrada vacía o null
  * magnitudes2array(null)
- * // Termina el proceso con código de error 1
+ * // Muestra error y termina proceso: "ERROR: No se ha especificado uno o más magnitudes..."
  *
  * @example
- * // Error si se especifica una magnitud inválida
- * magnitudes2array('PM2.5_ug,INVALIDA')
- * // Muestra error y termina el proceso con código de error 1
+ * // Error: magnitud no válida
+ * magnitudes2array('PM2.5_ug,INVALID_MAG')
+ * // Muestra error y termina proceso: "La magnitud 'INVALID_MAG' no es válida..."
+ *
+ * @see reviewMagnitude Para validar una magnitud individual
+ * @see getSimpleMagnitudes Para obtener la lista completa de magnitudes válidas
  */
 export const magnitudes2array = (magnitudes: string | null): string[] => {
-    if (!magnitudes || magnitudes === NONE || magnitudes === '') {
-        fnConsole(ERROR_MESSAGE)(`ERROR: No se ha especificado uno o más magnitudes separadas por coma. Un subconjunto de ${validMagnitudes()}`);
+    const exitWithError = (message: string) => {
+        fnConsole(ERROR_MESSAGE)(message);
         process.exit(1);
+    };
+
+    if (!magnitudes || magnitudes === NONE || magnitudes === '') {
+        exitWithError(`ERROR: No se ha especificado uno o más magnitudes separadas por coma. Un subconjunto de ${getSimpleMagnitudes()}`);
     }
+
     if (magnitudes === ALL) {
-        return validMagnitudes(true);
+        const result = getSimpleMagnitudes();
+        return result;
     }
-    
-    const inputMagnitudes = magnitudes.split(',').map(m => m.trim()).filter(m => m.length > 0);
 
-    inputMagnitudes.forEach((magnitude: string) => {
-        if (!reviewMagnitude(magnitude)) {
-            fnConsole(ERROR_MESSAGE)(`La magnitud '${magnitude}' no es válida. Las magnitudes válidas son: ${validMagnitudes().join(',')}`);
-            process.exit(1);
-        }
-    });
+    const normalizedMagnitudes = (!magnitudes)?[]:magnitudes
+        .split(',')
+        .map(m => m.trim())
+        .filter(m => m.length > 0);
 
-    return inputMagnitudes;
+    const invalidMagnitude = normalizedMagnitudes.find(magnitude => !reviewMagnitude(magnitude));
+    if (invalidMagnitude) {
+        exitWithError(`La magnitud '${invalidMagnitude}' no es válida. Las magnitudes válidas son: ${getSimpleMagnitudes().join(',')}`);
+    }
+    return normalizedMagnitudes;
 };
 
 /**

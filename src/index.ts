@@ -9,7 +9,7 @@ import {
 import {packageJson} from "./commons/index.js";
 import {commandFrom} from "./commands/index.js";
 import {validParamsHelp} from "./commands/index.js";
-import {validMagnitudes, magnitudesHelp} from "./parameters/index.js";
+import {getSimpleMagnitudes, magnitudesHelp} from "./parameters/index.js";
 import chalk from "chalk";
 import {commandMagnitudes} from "./commands/command.magnitudes.js";
 import {magnitudes2array} from "./parameters/params.magnitudes.js";
@@ -50,7 +50,7 @@ program
     .addOption(
         new Option(
             '-M,--magnitudes <lista de Magnitudes>',
-            `Lista de magnitudes separadas por comas Por lo general es una sublista de: ${validMagnitudes().join(',')}`
+            `Lista de magnitudes separadas por comas Por lo general es una sublista de: ${getSimpleMagnitudes().join(',')}`
         )
             .makeOptionMandatory(false)
             .argParser(commandMagnitudes)

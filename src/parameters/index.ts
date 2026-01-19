@@ -14,15 +14,19 @@ export type {
 
 export {
     reviewMagnitude,
-    validMagnitudes,
+    getSimpleMagnitudes,
+    getDetailedMagnitudes,
+    magnitudes2array,
     validateMagnitudes,
     magnitudesHelp,
 } from "./params.magnitudes.js"
 
 export {
-    validOpoints,
-    validateOpoints,
     reviewOpoint,
+    getSimpleOpoints,
+    getDetailedOpoints,
+    opoints2array,
+    validateOpoints,
     opointsHelp
 } from "./params.opoints.js"
 

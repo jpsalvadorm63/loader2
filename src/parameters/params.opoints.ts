@@ -13,6 +13,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 
 import {
+    ERROR_MESSAGE,
     INFO_MESSAGE,
     TConsoleMessageType
 } from "../commons/console.js";
@@ -33,38 +34,72 @@ export const reviewOpoint = (opoint: string): boolean => {
 }
 
 
+/** Representa un punto de observación con nombre y código airVisio */
+type OpointSummary = Pick<IOpoint, 'nombre' | 'airVisio'>;
+
 /**
- * Obtiene la lista de puntos de observación válidos
- * @param simple - Si es true, devuelve solo los códigos airVisio. Si es false, devuelve objetos con nombre y código
- * @returns Array de puntos de observación en formato simple o detallado
+ * Obtiene una lista simple de códigos airVisio de todos los puntos de observación
+ * @returns Array de strings con los códigos airVisio
  */
-export const validOpoints = (simple: boolean = true) => {
-    return simple
-        ? OPOINTS.map(m => m.airVisio).join(', ')
-        : OPOINTS.map(m => ({nombre: m.nombre, airVisio: m.airVisio}));
+export function getSimpleOpoints(): string[] {
+    return OPOINTS.map((o: IOpoint) => o.airVisio);
 }
 
+/**
+ * Obtiene una lista detallada con nombre y código airVisio de todos los puntos de observación
+ * @returns Array de objetos OpointSummary con nombre y airVisio
+ */
+export function getDetailedOpoints(): OpointSummary[] {
+    return OPOINTS.map((o: IOpoint): OpointSummary => ({
+        nombre: o.nombre,
+        airVisio: o.airVisio,
+    }));
+}
+
+/**
+ * Convierte una cadena de puntos de observación en un array de códigos airVisio válidos
+ *
+ * @param {string | null} opoints - Cadena con puntos de observación separados por comas, 'ALL' para todas las magnitudes, NONE, cadena vacía o null
+ * @returns {string[]} Array de strings con los códigos airVisio de los puntos de observación válidos
+ * @throws {Error} Termina el proceso con código 1 si la entrada es inválida o algún punto no es reconocido
+ */
+export const opoints2array = (opoints: string | null): string[] => {
+    const exitWithError = (message: string) => {
+        fnConsole(ERROR_MESSAGE)(message);
+        process.exit(1);
+    };
+
+    if (!opoints || opoints === NONE || opoints === '') {
+        exitWithError(`ERROR: No se ha especificado uno o más puntos de observación separadas por coma. Un subconjunto de ${getSimpleOpoints()}`);
+    }
+
+    if (opoints === ALL) {
+        const result = getSimpleOpoints();
+        console.log('Se utilizarán todos los puntos de observación válidos : ', result);
+        return result;
+    }
+
+    const normalizedOpoints = (!opoints)?[]:opoints
+        .split(',')
+        .map(o => o.trim())
+        .filter(o => o.length > 0);
+
+    const invalidOpoint = normalizedOpoints.find(opoint => !reviewOpoint(opoint));
+    if (invalidOpoint) {
+        exitWithError(`El punto de observación '${invalidOpoint}' no es válido. Las estaciones válidas son: ${getSimpleOpoints().join(',')}`);
+    }
+    console.log('....Puntos de observación válidos procesados: ', normalizedOpoints);
+    return normalizedOpoints;
+};
 
 /**
  * Valida que los puntos de observación especificados sean correctos y existan en la lista de puntos permitidos
- * @param {string} opoints - Cadena con uno o más códigos de puntos de observación separados por comas, o ALLPARAM para todos
+ * @param {string | null} opoints - Cadena con uno o más códigos de puntos de observación separados por comas, o ALL para todos
  * @returns {boolean} true si todos los puntos de observación son válidos
- * @throws {Error} Si no se especificó ningún punto de observación o si alguno de los puntos no es válido
  */
-export const validateOpoints = (opoints: string): boolean => {
-    if (opoints === NONE) {
-        throw new Error("No se ha especificado uno o más puntos de observación separadas por coma");
-    }
-    if (opoints === ALL) {
-        return true
-    }
-    opoints.split(',').forEach((opoint : string) => {
-        if(!reviewOpoint(opoint)) {
-            throw new Error(`La magnitud '${opoint}' no es válida. Las estaciones válidas son: ${OPOINTS.map(m => m.airVisio).join(', ')}`);
-        }
-    })
-    return true;
-}
+export const validateOpoints = (opoints: string | null): boolean => {
+    return opoints2array(opoints).length > 0;
+};
 
 /**
  * Configuración de la tabla para mostrar información de puntos de observación
