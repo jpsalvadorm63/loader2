@@ -31,7 +31,7 @@ program
     .description('CLI para transferencia de datos desde AirVisio system al sistema Remmaq Visor')
     .version(packageJson.version);
 
-// @ts-ignore
+
 program
     .command('fromAirVisio')
     .description('Descarga de datos')

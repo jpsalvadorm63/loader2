@@ -21,28 +21,119 @@ import {
 import {fnConsole} from "../commons/console.js";
 
 /**
- * Verifica si una magnitud específica es válida
- * @param magnitude - Cadena que representa la magnitud a verificar
- * @returns true si la magnitud es válida, false en caso contrario
+ * Valida si una magnitud especificada existe en el sistema
+ *
+ * Esta función verifica si un código airVisio de magnitud proporcionado
+ * corresponde a alguna de las magnitudes configuradas en el sistema.
+ * Es útil para validación de entrada antes de procesar solicitudes.
+ *
+ * @param {string} magnitude - Código airVisio de la magnitud a validar
+ * @returns {boolean} true si la magnitud existe en el sistema, false en caso contrario
+ *
+ * @example
+ * // Validar una magnitud existente
+ * reviewMagnitude('PM2.5_ug')
+ * // Retorna: true
+ *
+ * @example
+ * // Validar una magnitud no existente
+ * reviewMagnitude('INVALID_MAG')
+ * // Retorna: false
+ *
+ * @example
+ * // Uso en validación de entrada
+ * const magnitud = 'TEMP_AMB';
+ * if (reviewMagnitude(magnitud)) {
+ *     console.log('Magnitud válida, procesando...');
+ * } else {
+ *     console.error('Magnitud no reconocida');
+ * }
+ *
+ * @see MAGNITUDES Para ver la lista completa de magnitudes disponibles
+ * @see magnitudes2array Para validar múltiples magnitudes a la vez
+ * @see getSimpleMagnitudes Para obtener todos los códigos airVisio válidos
  */
 export const reviewMagnitude = (magnitude: string): boolean => {
-    return MAGNITUDES.some((m : IMagnitude) => m.airVisio === magnitude);
+    return MAGNITUDES.some((m: IMagnitude) => m.airVisio === magnitude);
 }
 
 /**
- * Obtiene una lista simple de códigos airVisio de todas las magnitudes
- * @returns Array de strings con los códigos airVisio
+ * Obtiene una lista simple de códigos airVisio de todas las magnitudes disponibles
+ *
+ * Esta función extrae únicamente los códigos airVisio de todas las magnitudes
+ * configuradas en el sistema, retornando un array simple de strings. Es útil
+ * cuando solo se necesitan los identificadores sin información adicional.
+ *
+ * @returns {string[]} Array de strings con los códigos airVisio de todas las magnitudes
+ *
+ * @example
+ * // Obtener lista simple de códigos
+ * const codigos = getSimpleMagnitudes();
+ * // Retorna: ['PM2.5_ug', 'TEMP_AMB', 'DIR_VEC', ...]
+ *
+ * @example
+ * // Usar en validación
+ * const magnitudesValidas = getSimpleMagnitudes();
+ * if (magnitudesValidas.includes('PM2.5_ug')) {
+ *     console.log('Magnitud válida');
+ * }
+ *
+ * @example
+ * // Mostrar magnitudes disponibles
+ * console.log(`Magnitudes disponibles: ${getSimpleMagnitudes().join(', ')}`);
+ * // Muestra: "Magnitudes disponibles: PM2.5_ug, TEMP_AMB, DIR_VEC, ..."
+ *
+ * @see getDetailedMagnitudes Para obtener magnitudes con nombre y código airVisio
+ * @see MAGNITUDES Para acceder a la configuración completa incluyendo códigos visor
+ * @see magnitudes2array Para procesar y validar una cadena de magnitudes
  */
 export function getSimpleMagnitudes(): string[] {
-    return MAGNITUDES.map(({ airVisio }) => airVisio);
+    return MAGNITUDES.map(({airVisio}) => airVisio);
 }
 
 /** Representa una magnitud con nombre y código airVisio */
 type MagnitudeSummary = Pick<IMagnitude, 'nombre' | 'airVisio'>;
 
 /**
- * Obtiene una lista detallada con nombre y código airVisio de todas las magnitudes
- * @returns Array de objetos MagnitudeSummary con nombre y airVisio
+ * Obtiene una lista detallada de magnitudes con nombre y código airVisio
+ *
+ * Esta función retorna un array de objetos que contienen únicamente el nombre descriptivo
+ * y el código airVisio de cada magnitud disponible en el sistema. Es útil cuando se necesita
+ * mostrar información más completa que solo los códigos airVisio.
+ *
+ * @returns {MagnitudeSummary[]} Array de objetos con las propiedades:
+ *                                - nombre: Nombre descriptivo de la magnitud
+ *                                - airVisio: Código identificador en el sistema AirVisio
+ *
+ * @example
+ * // Obtener lista detallada de magnitudes
+ * const magnitudes = getDetailedMagnitudes();
+ * // Retorna: [
+ * //   { nombre: 'Partículas PM2.5', airVisio: 'PM2.5_ug' },
+ * //   { nombre: 'Temperatura ambiente', airVisio: 'TEMP_AMB' },
+ * //   { nombre: 'Dirección vectorial', airVisio: 'DIR_VEC' },
+ * //   ...
+ * // ]
+ *
+ * @example
+ * // Mostrar magnitudes en formato tabla
+ * getDetailedMagnitudes().forEach(({ nombre, airVisio }) => {
+ *     console.log(`${nombre}: ${airVisio}`);
+ * });
+ * // Muestra:
+ * // Partículas PM2.5: PM2.5_ug
+ * // Temperatura ambiente: TEMP_AMB
+ * // Dirección vectorial: DIR_VEC
+ *
+ * @example
+ * // Usar en selección de UI
+ * const options = getDetailedMagnitudes().map(m => ({
+ *     label: m.nombre,
+ *     value: m.airVisio
+ * }));
+ *
+ * @see getSimpleMagnitudes Para obtener solo los códigos airVisio sin nombres
+ * @see MAGNITUDES Para acceder a la configuración completa de magnitudes incluyendo códigos visor
  */
 export function getDetailedMagnitudes(): MagnitudeSummary[] {
     return MAGNITUDES.map(({nombre, airVisio}): MagnitudeSummary => ({nombre, airVisio,}));
@@ -150,10 +241,29 @@ export const validateMagnitudes = (magnitudes: string | null): boolean => {
 };
 
 /**
- * Crea y configura una nueva instancia de tabla para mostrar información de magnitudes
- * @returns Instancia de Table configurada
+ * Crea una tabla ASCII formateada para mostrar información de magnitudes
+ *
+ * Esta función inicializa una tabla con formato ASCII que contiene tres columnas:
+ * nombre, airVisio y visor. La tabla utiliza caracteres especiales para crear
+ * bordes y separadores con estilo de caja.
+ *
+ * @returns {Table} Instancia de tabla configurada con:
+ *                  - Encabezados: nombre (28 chars), airVisio (10 chars), visor (8 chars)
+ *                  - Alineación: izquierda para nombre, centrada para airVisio y visor
+ *                  - Caracteres de borde estilo línea continua (─, │, ┌, ┐, └, ┘, etc.)
+ *
+ * @example
+ * const table = createAsciiMagnitudesTable();
+ * table.push(['Partículas PM2.5', 'PM2.5_ug', '01']);
+ * console.log(table.toString());
+ * // Muestra:
+ * // ┌────────────────────────────┬──────────┬────────┐
+ * // │ nombre                     │ airVisio │ visor  │
+ * // ├────────────────────────────┼──────────┼────────┤
+ * // │ Partículas PM2.5           │ PM2.5_ug │   01   │
+ * // └────────────────────────────┴──────────┴────────┘
  */
-const createMagnitudesTable = () => {
+const createAsciiMagnitudesTable = () => {
     return new Table({
         head: [
             chalk.bold.black("nombre"),
@@ -171,21 +281,85 @@ const createMagnitudesTable = () => {
     });
 };
 
+
 /**
- * Genera una tabla con información de las magnitudes disponibles
- * @returns Objeto Table con las magnitudes formateadas (nombre, código airVisio y código visor)
+ * Genera una tabla ASCII formateada con todas las magnitudes disponibles del sistema
+ *
+ * Esta función crea una tabla completa que muestra todas las magnitudes configuradas en el sistema,
+ * incluyendo su nombre descriptivo, código airVisio (resaltado en rojo) y código visor.
+ * La tabla está lista para ser impresa en consola con formato ASCII.
+ *
+ * @returns {Table} Instancia de tabla cli-table3 poblada con todas las magnitudes del sistema,
+ *                  formateada con bordes ASCII y columnas alineadas
+ *
+ * @example
+ * // Crear y mostrar tabla de magnitudes
+ * const table = magnitudesTable();
+ * console.log(table.toString());
+ * // Muestra:
+ * // ┌────────────────────────────┬──────────┬────────┐
+ * // │ nombre                     │ airVisio │ visor  │
+ * // ├────────────────────────────┼──────────┼────────┤
+ * // │ Partículas PM2.5           │ PM2.5_ug │   01   │
+ * // │ Temperatura ambiente       │ TEMP_AMB │   83   │
+ * // │ Dirección vectorial        │ DIR_VEC  │   81   │
+ * // └────────────────────────────┴──────────┴────────┘
+ *
+ * @example
+ * // Usar en función de ayuda
+ * export const showHelp = () => {
+ *     console.log('Magnitudes disponibles:');
+ *     console.log(magnitudesTable().toString());
+ * }
+ *
+ * @see createAsciiMagnitudesTable Para más detalles sobre el formato de la tabla
+ * @see MAGNITUDES Para ver la configuración completa de magnitudes disponibles
+ * @see magnitudesHelp Para mostrar la ayuda completa con la tabla y ejemplos de uso
  */
 export const magnitudesTable = () => {
-    const table = createMagnitudesTable();
+    const table = createAsciiMagnitudesTable();
     MAGNITUDES.forEach(m => {
         table.push([m.nombre, chalk.bold.red(m.airVisio), m.visor])
     })
     return table;
 }
 
+
 /**
- * Muestra la ayuda sobre las magnitudes disponibles y cómo especificarlas
- * @param {TConsoleMessageType} msgType - Tipo de mensaje de consola a utilizar (por defecto INFO_MESSAGE)
+ * Muestra información de ayuda sobre las magnitudes aceptadas en la línea de comandos
+ *
+ * Esta función genera y muestra en consola una ayuda completa sobre las magnitudes disponibles,
+ * incluyendo una tabla formateada con los códigos de magnitud para los sistemas AirVisio y
+ * RemmaqVisor, junto con ejemplos de uso en la línea de comandos.
+ *
+ * @param {TConsoleMessageType} msgType - Tipo de mensaje de consola a utilizar (por defecto INFO_MESSAGE).
+ *                                         Puede ser INFO_MESSAGE, LOG_MESSAGE, ERROR_MESSAGE o WARN_MESSAGE
+ * @returns {void} No retorna ningún valor, imprime directamente en consola
+ *
+ * @example
+ * // Mostrar ayuda con tipo de mensaje por defecto (info)
+ * magnitudesHelp()
+ * // Muestra:
+ * // -----
+ * // Magnitudes aceptadas en la línea de comandos
+ * // [tabla con magnitudes]
+ * // nombre   .- Nombre de la magnitud
+ * // airVisio .- Código de la magnitud en el sistema AirVisio
+ * // visor    .- Código de la magnitud en el sistema RemmaqVisor
+ * // ...ejemplos...
+ *
+ * @example
+ * // Mostrar ayuda con tipo de mensaje warn
+ * magnitudesHelp(WARN_MESSAGE)
+ * // Muestra la misma información pero usando console.warn
+ *
+ * @example
+ * // Mostrar ayuda con tipo de mensaje error
+ * magnitudesHelp(ERROR_MESSAGE)
+ * // Muestra la misma información pero usando console.error
+ *
+ * @see magnitudesTable Para obtener solo la tabla de magnitudes sin el resto de la ayuda
+ * @see fnConsole Para más información sobre los tipos de mensajes de consola disponibles
  */
 export const magnitudesHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
     // Agrupar mensajes relacionados y reducir llamadas

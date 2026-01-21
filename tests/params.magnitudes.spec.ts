@@ -1,5 +1,10 @@
 import {describe, it, expect, vi} from 'vitest';
-import {magnitudes2array, getSimpleMagnitudes} from '../src/parameters/params.magnitudes.js';
+import {
+    magnitudes2array,
+    getSimpleMagnitudes,
+    getDetailedMagnitudes,
+    magnitudesTable
+} from '../src/parameters/params.magnitudes.js';
 
 describe('magnitudes2array(null)', () => {
     it('should show help and exit when input is null', () => {
@@ -31,10 +36,12 @@ describe('magnitudes2array(null)', () => {
     it('should return array with single valid magnitude', () => {
         const validMags = getSimpleMagnitudes();
         if (validMags.length > 0) {
-            const result = magnitudes2array(validMags[0]);
+            const shuffledMags = validMags.sort(() => Math.random() - 0.5);
+            const reducedCsvMags = shuffledMags.slice(0, Math.ceil(shuffledMags.length / 2)).join();
+            const result = magnitudes2array(reducedCsvMags);
             expect(result).toBeInstanceOf(Array);
-            expect(result).toHaveLength(1);
-            expect(result[0]).toBe(validMags[0]);
+            expect(result).toHaveLength(Math.ceil(shuffledMags.length / 2));
+            expect(result[0]).toBe(shuffledMags[0]);
         }
     });
 
@@ -98,3 +105,22 @@ describe('magnitudes2array(null)', () => {
         expect(result).toEqual(validMags);
     });
 });
+
+describe('getDetailedMagnitudes()', () => {
+    it('should return an array of magnitude objects', () => {
+        const result = getDetailedMagnitudes();
+        expect(result).toBeInstanceOf(Array);
+        expect(result.length).toBeGreaterThan(0);
+    });
+
+    it('should return objects with required properties', () => {
+        const result = getDetailedMagnitudes();
+        result.forEach(magnitude => {
+            expect(magnitude).toHaveProperty('nombre');
+            expect(magnitude).toHaveProperty('airVisio');
+            expect(typeof magnitude.nombre).toBe('string');
+            expect(typeof magnitude.airVisio).toBe('string');
+        });
+    });
+});
+
