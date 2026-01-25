@@ -1,6 +1,7 @@
 /**
- * Un place holder cualquiera que funciona dentro de una cadena de caracteres con propósito warever
- * Por ejemplo "mi nombre es ..."
+ * Marcador de posición (placeholder) que se utiliza dentro de una cadena de caracteres
+ * para indicar una sección que será reemplazada o completada.
+ * Por ejemplo: "Mi nombre es [...]"
  */
 export const PLACEHOLDER = '[...]'
 

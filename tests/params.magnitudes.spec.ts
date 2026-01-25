@@ -2,9 +2,8 @@ import {describe, it, expect, vi} from 'vitest';
 import {
     magnitudes2array,
     getSimpleMagnitudes,
-    getDetailedMagnitudes,
-    magnitudesTable
-} from '../src/parameters/params.magnitudes.js';
+    getDetailedMagnitudes
+} from '../src/parameters/index.js';
 
 describe('magnitudes2array(null)', () => {
     it('should show help and exit when input is null', () => {
@@ -123,4 +122,3 @@ describe('getDetailedMagnitudes()', () => {
         });
     });
 });
-

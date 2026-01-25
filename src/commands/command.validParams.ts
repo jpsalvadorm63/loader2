@@ -1,11 +1,19 @@
 import {clearScreen, wait} from "../commons/index.js";
 import {paramsHelp} from "../parameters/params.js";
 import {dateTimeHelp1, dateTimeHelp2, dateTimeHelp3, dateTimeHelp4, dateTimeHelp5} from "../dateTime/dateTime.js";
-import {magnitudesHelp, opointsHelp} from "../parameters/index.js";
-import {intervalsHelp} from "../parameters/params.intervals.js";
+import {magnitudesHelp, opointsHelp, intervalsHelp} from "../parameters/index.js";
 
 
- export const validParamsHelp = async () => {
+/**
+ * Muestra la ayuda detallada de todos los parámetros válidos para el comando 'loader2 fromAirVisio'.
+ *
+ * Esta función limpia la pantalla y guía al usuario a través de varias secciones de ayuda,
+ * incluyendo ayuda general, formatos de fecha y hora, magnitudes, puntos de observación e intervalos.
+ * Utiliza pausas interactivas para que el usuario pueda leer cada sección a su propio ritmo.
+ *
+ * @returns {Promise<void>} Una promesa que se resuelve cuando el usuario termina de ver la ayuda o sale.
+ */
+export const validParamsHelp = async () => {
     const clearMyScreen = true;
     clearScreen();
     paramsHelp()

@@ -1,4 +1,7 @@
-
+/**
+ * Módulo de parámetros que centraliza las configuraciones de magnitudes y puntos de observación.
+ * Proporciona acceso a constantes, interfaces y funciones de validación.
+ */
 
 export {
     NONE,
@@ -12,6 +15,9 @@ export type {
     IOpoint,
 } from "./configs/params.interfaces.js"
 
+/**
+ * Exportaciones relacionadas con las magnitudes (ej. PM10, PM2.5, NO2).
+ */
 export {
     reviewMagnitude,
     getSimpleMagnitudes,
@@ -21,6 +27,9 @@ export {
     magnitudesHelp,
 } from "./params.magnitudes.js"
 
+/**
+ * Exportaciones relacionadas con los puntos de observación (estaciones de monitoreo).
+ */
 export {
     reviewOpoint,
     getSimpleOpoints,
@@ -30,5 +39,12 @@ export {
     opointsHelp
 } from "./params.opoints.js"
 
+/**
+ * Exportaciones relacionadas con los intervalos de tiempo.
+ */
 export {
-}
+    reviewInterval,
+    validIntervals,
+    validateIntervals,
+    intervalsHelp
+} from "./params.intervals.js"

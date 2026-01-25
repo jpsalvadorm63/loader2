@@ -14,6 +14,13 @@ import chalk from "chalk";
 import {commandMagnitudes} from "./commands/command.magnitudes.js";
 import {magnitudes2array} from "./parameters/params.magnitudes.js";
 
+/**
+ * Punto de entrada principal para la aplicación CLI 'loader2'.
+ *
+ * Configura los comandos y opciones disponibles utilizando la librería 'commander'.
+ * Permite realizar la transferencia de datos desde el sistema AirVisio al sistema Remmaq Visor.
+ */
+
 dayjs.locale('es');
 
 dayjs.extend(customParseFormat);

@@ -43,7 +43,7 @@ export const clearScreen = () => {
  * // Si el usuario ingresa 'q' o 'Q', el proceso termina con process.exit(0)
  */
 export const wait = async (
-    waitingMessage: string = 'Press Enter to continue or q to quit...',
+    waitingMessage: string = 'Presione Enter para continuar o q para salir...',
     clearScreenBefore: boolean = false
 ) =>
     await new Promise<void>(async resolve => {

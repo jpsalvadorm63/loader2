@@ -60,29 +60,35 @@ export const validateIntervals = (interval: string): boolean => {
 }
 
 /**
- * Tabla configurada con formato específico para mostrar información de intervalos.
- * Incluye encabezados, anchos de columna, caracteres de borde y alineación.
+ * Configuración de la tabla para mostrar información de intervalos.
+ *
+ * @returns {Table} Instancia de tabla cli-table3 configurada con encabezados y estilos
  */
-const table = new Table({
-    head: [
-        chalk.bold.black("nombre"),
-        chalk.bold.black("interval"),
-    ],
-    colWidths: [28, 28], // ancho de columnas
-    chars: {
-        'top': '─', 'top-mid': '┬', 'top-left': '┌', 'top-right': '┐',
-        'bottom': '─', 'bottom-mid': '┴', 'bottom-left': '└', 'bottom-right': '┘',
-        'left': '│', 'left-mid': '├', 'mid': '─', 'mid-mid': '┼',
-        'right': '│', 'right-mid': '┤', 'middle': '│'
-    },
-    colAligns: ["left", "center"] // alineación por columna
-});
+const createAsciiIntervalsTable = () => {
+    return new Table({
+        head: [
+            chalk.bold.black("nombre"),
+            chalk.bold.black("interval"),
+        ],
+        colWidths: [28, 28], // ancho de columnas
+        chars: {
+            'top': '─', 'top-mid': '┬', 'top-left': '┌', 'top-right': '┐',
+            'bottom': '─', 'bottom-mid': '┴', 'bottom-left': '└', 'bottom-right': '┘',
+            'left': '│', 'left-mid': '├', 'mid': '─', 'mid-mid': '┼',
+            'right': '│', 'right-mid': '┤', 'middle': '│'
+        },
+        colAligns: ["left", "center"] // alineación por columna
+    });
+};
 
 /**
- * Genera una tabla formateada con todos los intervalos disponibles.
- * @returns {Table} Tabla con los nombres y códigos de intervalos
+ * Genera una tabla ASCII formateada con todos los intervalos disponibles.
+ *
+ * @returns {Table} Instancia de tabla cli-table3 poblada con los intervalos,
+ *                  incluyendo nombre y código de intervalo
  */
 export const intervalTable = () => {
+    const table = createAsciiIntervalsTable();
     IIntervals.forEach(i => {
         table.push([i.nombre, chalk.bold.red(i.interval)])
     })
@@ -90,18 +96,26 @@ export const intervalTable = () => {
 }
 
 /**
- * Muestra ayuda en consola sobre los intervalos disponibles y cómo usarlos en la línea de comandos.
- * @param {TConsoleMessageType} msgType - Tipo de mensaje de consola (por defecto INFO_MESSAGE)
+ * Muestra información de ayuda sobre los intervalos aceptados en la línea de comandos.
+ *
+ * Esta función genera y muestra en consola una ayuda completa sobre los intervalos disponibles,
+ * incluyendo una tabla formateada y ejemplos de uso.
+ *
+ * @param {TConsoleMessageType} msgType - Tipo de mensaje de consola a utilizar (por defecto INFO_MESSAGE)
+ * @returns {void}
  */
 export const intervalsHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
-    const myConsole = fnConsole(msgType);
-    myConsole('\n-----')
-    myConsole(chalk.rgb(0, 0, 139).bold('Intervalos aceptados en la línea de comandos'))
-    myConsole(intervalTable().toString())
-    myConsole(chalk.black.bold(' nombre   .- Nombre de la estación'))
-    myConsole(chalk.black.bold(' interval .- Código del intervalo en el sistema AirVisio'))
-    myConsole(chalk.blue("\n Las magnitudes se especifican con '-I ' o con '--interval='"))
-    myConsole(chalk.blue("   seguido de un solo 'código interval'.\n"))
-    myConsole(chalk.blue("\nEjemplos:\n\n$ "), chalk.bold("loader2 fromAirVisio --interval=001m"))
-    myConsole(chalk.blue("\n$ "), chalk.bold("loader2 fromAirVisio -I 001m\n"))
+    const messages = [
+        '\n-----',
+        chalk.rgb(0, 0, 139).bold('Intervalos aceptados en la línea de comandos'),
+        intervalTable().toString(),
+        chalk.black.bold(' nombre   .- Nombre del intervalo'),
+        chalk.black.bold(' interval .- Código del intervalo en el sistema AirVisio'),
+        chalk.blue("\n Los intervalos se especifican con '-I ' o con '--interval='"),
+        chalk.blue("   seguido de un solo 'código interval'.\n"),
+        chalk.blue("\nEjemplos:\n\n$ ") + chalk.bold("loader2 fromAirVisio --interval=001m"),
+        chalk.blue("\n$ ") + chalk.bold("loader2 fromAirVisio -I 001m\n")
+    ];
+
+    fnConsole(msgType)(messages.join('\n'));
 }

@@ -98,9 +98,9 @@ export const str2dayjs = (value: string, errorMsg: string = DEFAULT_DATE_TIME_FO
  * a: años (máximo {MAX_ANIOS})
  */
 export const timeFrame = (value: string): ITimeExpression => {
-    // ^([+-])?   → optional sign (+ or -) default -
-    // (\d*)      → optional number (0 or more digits) default 3
-    // ([hdma])?  → final character (one letter) default h
+    // ^([+-])?   → signo opcional (+ o -) por defecto -
+    // (\d*)      → número opcional (0 o más dígitos) por defecto 3
+    // ([hdma])?  → carácter final (una letra) por defecto h
     const regex = /^([+-])?(\d*)([hdma])?$/;
 
     const match = (value === null || value === '' ) ? [null, null,null] : value.match(regex);

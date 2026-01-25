@@ -1,14 +1,16 @@
-export {
-
-}
+/**
+ * Módulo de gestión de fechas y tiempos.
+ * Proporciona constantes, funciones de manipulación y tipos para el manejo de intervalos temporales.
+ */
 
 /**
- * Constantes exportadas:
- * - DATE_TIME_FORMAT: Formato estándar de fecha y hora
- * - max_anios: Número máximo de años permitido
- * - max_dias: Número máximo de días permitido
- * - max_horas: Número máximo de horas permitido
- * - max_meses: Número máximo de meses permitido
+ * Constantes para el manejo de fechas y tiempos:
+ * - DATE_TIME_FORMAT: Formato estándar de fecha y hora (YYYY-MM-DDTHH:mm)
+ * - MAX_ANIOS: Número máximo de años permitido para intervalos
+ * - MAX_DIAS: Número máximo de días permitido para intervalos
+ * - MAX_HORAS: Número máximo de horas permitido para intervalos
+ * - MAX_MESES: Número máximo de meses permitido para intervalos
+ * - Mensajes de error por defecto y configuraciones de marco de tiempo
  */
 export {
     INVALID_START_DATE,
@@ -29,13 +31,14 @@ export {
 } from './dateTime.constants.js';
 
 /**
- * Funciones exportadas:
- * - str2dayjs: Convierte una cadena de texto a objeto dayjs
- * - timeFrame: Genera un marco de tiempo basado en una expresión temporal
- * - computeTimeInterval: Calcula un intervalo de tiempo
- * - timeIntervalDiff: Calcula la diferencia entre dos momentos temporales
- * - truncDateTime: Trunca una fecha y hora
- * - roundDateTime: Redondea una fecha y hora
+ * Funciones para manipulación de fechas y tiempos:
+ * - THIS_MOMENT: Obtiene el momento actual formateado
+ * - str2dayjs: Valida y convierte una cadena a formato de fecha
+ * - timeFrame: Procesa expresiones de marco de tiempo (ej. -3h)
+ * - computeTimeInterval: Calcula intervalos de tiempo basados en una fecha y marco de tiempo
+ * - timeIntervalDiff: Calcula la diferencia desglosada de un intervalo
+ * - truncDateTime: Trunca fechas a la unidad especificada
+ * - roundDateTime: Redondea fechas hacia arriba a la unidad especificada
  */
 export {
     THIS_MOMENT,
@@ -48,10 +51,7 @@ export {
 } from './dateTime.js';
 
 /**
- * Tipos exportados:
- * - TimeExpression: Expresión de tiempo con signo, número y unidad
- * - TimeInterval: Intervalo de tiempo con inicio y fin
- * - TimeIntervalDiff: Diferencia de tiempo en días, horas y minutos
+ * Interfaces y tipos para el manejo de expresiones e intervalos de tiempo.
  */
 export type {
     ITimeExpression,
