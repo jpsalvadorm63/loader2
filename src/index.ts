@@ -7,12 +7,11 @@ import {
     THIS_MOMENT
 } from "./dateTime/dateTime.js";
 import {packageJson} from "./commons/index.js";
-import {commandFrom} from "./commands/index.js";
-import {validParamsHelp} from "./commands/index.js";
+import {commandFrom, commandMagnitudes, commandOpoints, validParamsHelp} from "./commands/index.js";
 import {getSimpleMagnitudes, magnitudesHelp} from "./parameters/index.js";
 import chalk from "chalk";
-import {commandMagnitudes} from "./commands/command.magnitudes.js";
 import {magnitudes2array} from "./parameters/params.magnitudes.js";
+import {getSimpleOpoints} from "./parameters/index.js";
 
 /**
  * Punto de entrada principal para la aplicación CLI 'loader2'.
@@ -38,7 +37,6 @@ program
     .description('CLI para transferencia de datos desde AirVisio system al sistema Remmaq Visor')
     .version(packageJson.version);
 
-
 program
     .command('fromAirVisio')
     .description('Descarga de datos')
@@ -62,11 +60,23 @@ program
             .makeOptionMandatory(false)
             .argParser(commandMagnitudes)
     )
+    .addOption(
+        new Option(
+            '-O,--opoints <lista de puntos de observacion>',
+            `Lista de puntos de observación separados por comas Por lo general es una sublista de: ${getSimpleOpoints().join(',')}`
+        )
+            .makeOptionMandatory(false)
+            .argParser(commandOpoints)
+    )
     .action(props => {
 
         // se ejecuta cuando no se ha colocado e argumento -M --magnitudes
         if (!props.magnitudes) {
             commandMagnitudes(null)
+        }
+
+        if (!props.opoints) {
+            commandOpoints(null)
         }
 
         console.log('>> ', props);

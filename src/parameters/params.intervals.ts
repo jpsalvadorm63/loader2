@@ -24,8 +24,13 @@ import {
 
 /**
  * Verifica si un intervalo dado existe en la lista de intervalos válidos.
+ *
  * @param {string} interval - Código del intervalo a verificar
  * @returns {boolean} true si el intervalo existe en la lista, false en caso contrario
+ *
+ * @example
+ * reviewInterval('001m') // true
+ * reviewInterval('invalid') // false
  */
 export const reviewInterval = (interval: string): boolean => {
     return IIntervals.some((i : IInterval) => i.interval === interval);
@@ -33,8 +38,14 @@ export const reviewInterval = (interval: string): boolean => {
 
 /**
  * Obtiene la lista de intervalos válidos en formato simple o detallado.
- * @param {boolean} simple - Si es true, retorna una cadena de códigos separados por comas; si es false, retorna un array de objetos con nombre e interval
+ *
+ * @param {boolean} simple - Si es true, retorna una cadena de códigos separados por comas;
+ *                           si es false, retorna un array de objetos con nombre e interval.
  * @returns {string | Array<{nombre: string, interval: string}>} Lista de intervalos en el formato especificado
+ *
+ * @example
+ * validIntervals(true) // "001m, 001h"
+ * validIntervals(false) // [{nombre: 'Promedio x minuto', interval: '001m'}, ...]
  */
 export const validIntervals = (simple: boolean = true) => {
     return simple
@@ -44,9 +55,14 @@ export const validIntervals = (simple: boolean = true) => {
 
 /**
  * Valida que un intervalo sea correcto y exista en la lista de intervalos permitidos.
+ *
  * @param {string} interval - Código del intervalo a validar
  * @returns {boolean} true si el intervalo es válido
  * @throws {Error} Si no se especificó un intervalo o si el intervalo no es válido
+ *
+ * @example
+ * validateIntervals('001m') // true
+ * validateIntervals('NONE') // Lanza Error
  */
 export const validateIntervals = (interval: string): boolean => {
     if (interval === NONE) {

@@ -15,3 +15,11 @@ export {
 export {
     commandFrom
 } from './command.from.js';
+
+export {
+    commandMagnitudes
+} from './command.magnitudes.js';
+
+export {
+    commandOpoints
+} from './command.opoints.js';

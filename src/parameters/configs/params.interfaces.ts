@@ -31,6 +31,6 @@ export interface IOpoint {
 export interface IInterval {
     /** Nombre del intervalo */
     nombre: string;
-    /** intervalo de tiempo */
+    /** Código del intervalo de tiempo utilizado en el sistema AirVisio */
     interval: string
 }
