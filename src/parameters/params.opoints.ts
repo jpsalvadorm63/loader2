@@ -28,7 +28,7 @@ import {
  * Busca el código proporcionado en la lista oficial de estaciones de monitoreo
  * configuradas en el sistema.
  *
- * @param {string} opoint - Código airVisio de la estación a verificar
+ * @param {string | null | undefined} opoint - Código airVisio de la estación a verificar
  * @returns {boolean} true si la estación existe y es válida, false en caso contrario
  *
  * @example
@@ -41,11 +41,15 @@ import {
  * reviewOpoint('ESTACION_FANTASMA')
  * // Retorna: false
  *
+ * @example
+ * reviewOpoint(null) // false
+ * reviewOpoint(undefined) // false
+ *
  * @see OPOINTS Para ver la lista completa de estaciones disponibles
  * @see opoints2array Para validar múltiples estaciones a la vez
  * @see getSimpleOpoints Para obtener todos los códigos airVisio válidos
  */
-export const reviewOpoint = (opoint: string): boolean => {
+export const reviewOpoint = (opoint: string | null | undefined): boolean => {
     return OPOINTS.some((o : IOpoint) => o.airVisio === opoint);
 }
 

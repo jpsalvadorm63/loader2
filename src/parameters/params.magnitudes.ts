@@ -27,7 +27,7 @@ import {fnConsole} from "../commons/console.js";
  * corresponde a alguna de las magnitudes configuradas en el sistema.
  * Es útil para validación de entrada antes de procesar solicitudes.
  *
- * @param {string} magnitude - Código airVisio de la magnitud a validar
+ * @param {string | null | undefined} magnitude - Código airVisio de la magnitud a validar
  * @returns {boolean} true si la magnitud existe en el sistema, false en caso contrario
  *
  * @example
@@ -39,6 +39,10 @@ import {fnConsole} from "../commons/console.js";
  * // Validar una magnitud no existente
  * reviewMagnitude('INVALID_MAG')
  * // Retorna: false
+ *
+ * @example
+ * reviewMagnitude(null) // false
+ * reviewMagnitude(undefined) // false
  *
  * @example
  * // Uso en validación de entrada
@@ -53,7 +57,7 @@ import {fnConsole} from "../commons/console.js";
  * @see magnitudes2array Para validar múltiples magnitudes a la vez
  * @see getSimpleMagnitudes Para obtener todos los códigos airVisio válidos
  */
-export const reviewMagnitude = (magnitude: string): boolean => {
+export const reviewMagnitude = (magnitude: string | null | undefined): boolean => {
     return MAGNITUDES.some((m: IMagnitude) => m.airVisio === magnitude);
 }
 

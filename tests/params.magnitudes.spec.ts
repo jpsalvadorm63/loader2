@@ -2,10 +2,28 @@ import {describe, it, expect, vi} from 'vitest';
 import {
     magnitudes2array,
     getSimpleMagnitudes,
-    getDetailedMagnitudes
+    getDetailedMagnitudes,
+    reviewMagnitude
 } from '../src/parameters/index.js';
 
-describe('magnitudes2array(null)', () => {
+describe('params.magnitudes', () => {
+    describe('reviewMagnitude', () => {
+        it('should return true for a valid magnitude', () => {
+            const validMags = getSimpleMagnitudes();
+            if (validMags.length > 0) {
+                expect(reviewMagnitude(validMags[0])).toBe(true);
+            }
+        });
+
+        it('should return false for an invalid magnitude', () => {
+            expect(reviewMagnitude('INVALID_MAG')).toBe(false);
+            expect(reviewMagnitude('')).toBe(false);
+            expect(reviewMagnitude(null)).toBe(false);
+            expect(reviewMagnitude(undefined)).toBe(false);
+        });
+    });
+
+    describe('magnitudes2array', () => {
     it('should show help and exit when input is null', () => {
         const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
         const exitSpy = vi.spyOn(process, 'exit').mockImplementation((code?: number | string | null | undefined): never => {
@@ -121,4 +139,5 @@ describe('getDetailedMagnitudes()', () => {
             expect(typeof magnitude.airVisio).toBe('string');
         });
     });
+});
 });

@@ -13,6 +13,8 @@ describe('params.intervals', () => {
         it('should return false for an invalid interval', () => {
             expect(reviewInterval('invalid')).toBe(false);
             expect(reviewInterval('')).toBe(false);
+            expect(reviewInterval(null)).toBe(false);
+            expect(reviewInterval(undefined)).toBe(false);
         });
     });
 

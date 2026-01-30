@@ -1,7 +1,24 @@
 import {describe, it, expect, vi} from 'vitest';
-import {opoints2array, getSimpleOpoints} from '../src/parameters/params.opoints.js';
+import {opoints2array, getSimpleOpoints, reviewOpoint} from '../src/parameters/params.opoints.js';
 
-describe('opoints2array', () => {
+describe('params.opoints', () => {
+    describe('reviewOpoint', () => {
+        it('should return true for a valid opoint', () => {
+            const validOpoints = getSimpleOpoints();
+            if (validOpoints.length > 0) {
+                expect(reviewOpoint(validOpoints[0])).toBe(true);
+            }
+        });
+
+        it('should return false for an invalid opoint', () => {
+            expect(reviewOpoint('INVALID_OPOINT')).toBe(false);
+            expect(reviewOpoint('')).toBe(false);
+            expect(reviewOpoint(null)).toBe(false);
+            expect(reviewOpoint(undefined)).toBe(false);
+        });
+    });
+
+    describe('opoints2array', () => {
     it('should show help and exit when input is null', () => {
         const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
         const exitSpy = vi.spyOn(process, 'exit').mockImplementation((code?: number | string | null | undefined): never => {
@@ -80,4 +97,5 @@ describe('opoints2array', () => {
         const result = opoints2array('ALL');
         expect(result).toEqual(validOpoints);
     });
+});
 });
