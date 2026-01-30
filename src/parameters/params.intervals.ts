@@ -21,7 +21,6 @@ import {
     fnConsole
 } from "../commons/console.js";
 
-
 /**
  * Verifica si un intervalo dado existe en la lista de intervalos válidos.
  *
@@ -33,7 +32,7 @@ import {
  * reviewInterval('invalid') // false
  */
 export const reviewInterval = (interval: string): boolean => {
-    return IIntervals.some((i : IInterval) => i.interval === interval);
+    return IIntervals.some((i: IInterval) => i.interval === interval);
 }
 
 /**
@@ -50,7 +49,7 @@ export const reviewInterval = (interval: string): boolean => {
 export const validIntervals = (simple: boolean = true) => {
     return simple
         ? IIntervals.map(i => i.interval).join(', ')
-        : IIntervals.map(i => ({nombre: i.nombre, interval: i.interval}));
+        : IIntervals.map(i => ({ nombre: i.nombre, interval: i.interval }));
 }
 
 /**
@@ -69,7 +68,7 @@ export const validateIntervals = (interval: string): boolean => {
         throw new Error("No se ha especificado un intervalo");
     }
 
-    if(!reviewInterval(interval)) {
+    if (!reviewInterval(interval)) {
         throw new Error(`El intervalo '${interval}' no es válido. Los intervalos válidas son: ${IIntervals.map(i => i.interval).join(', ')}`);
     }
     return true;
@@ -86,14 +85,14 @@ const createAsciiIntervalsTable = () => {
             chalk.bold.black("nombre"),
             chalk.bold.black("interval"),
         ],
-        colWidths: [28, 28], // ancho de columnas
+        colWidths: [28, 28],
         chars: {
             'top': '─', 'top-mid': '┬', 'top-left': '┌', 'top-right': '┐',
             'bottom': '─', 'bottom-mid': '┴', 'bottom-left': '└', 'bottom-right': '┘',
             'left': '│', 'left-mid': '├', 'mid': '─', 'mid-mid': '┼',
             'right': '│', 'right-mid': '┤', 'middle': '│'
         },
-        colAligns: ["left", "center"] // alineación por columna
+        colAligns: ["left", "center"]
     });
 };
 
