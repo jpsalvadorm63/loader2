@@ -109,7 +109,7 @@ export const validIntervals = (simple: boolean = true) => {
  * // Lanza Error: "El intervalo 'invalid' no es válido. Los intervalos válidas son: 001m, 001h, 001d"
  */
 export const validateIntervals = (interval: string): boolean => {
-    if (interval === NONE) {
+    if (interval === NONE || interval === '' || interval === undefined || interval === null) {
         throw new Error("No se ha especificado un intervalo");
     }
 
@@ -164,6 +164,7 @@ const createAsciiIntervalsTable = () => {
 };
 
 
+
 /**
  * Genera una tabla ASCII formateada con todos los intervalos disponibles en el sistema AirVisio.
  *
@@ -172,7 +173,7 @@ const createAsciiIntervalsTable = () => {
  * - El nombre descriptivo del intervalo (ej: "1 minuto", "1 hora")
  * - El código del intervalo formateado en negrita y color rojo (ej: "001m", "001h")
  *
- * La tabla utiliza caracteres Unicode para crear bordes estilo ASCII art, proporcionando
+ * La tabla utiliza caracteres Unicode para crear borde estilo ASCII art, proporcionando
  * una salida clara y visualmente atractiva para la consola.
  *
  * @returns {Table} Instancia de tabla cli-table3 poblada con todos los intervalos del sistema,
@@ -266,3 +267,4 @@ export const intervalsHelp = (msgType: TConsoleMessageType = INFO_MESSAGE) => {
 
     fnConsole(msgType)(messages.join('\n'));
 }
+

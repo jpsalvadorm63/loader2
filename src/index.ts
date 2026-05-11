@@ -8,7 +8,7 @@ import {
 } from "./dateTime/dateTime.js";
 import {packageJson} from "./commons/index.js";
 import {commandFrom, commandMagnitudes, commandOpoints, validParamsHelp} from "./commands/index.js";
-import {getSimpleMagnitudes, magnitudesHelp} from "./parameters/index.js";
+import {getSimpleMagnitudes, magnitudesHelp, validIntervals} from "./parameters/index.js";
 import chalk from "chalk";
 import {magnitudes2array} from "./parameters/params.magnitudes.js";
 import {getSimpleOpoints} from "./parameters/index.js";
@@ -64,6 +64,14 @@ program
         new Option(
             '-O,--opoints <lista de puntos de observacion>',
             `Lista de puntos de observación separados por comas Por lo general es una sublista de: ${getSimpleOpoints().join(',')}`
+        )
+            .makeOptionMandatory(false)
+            .argParser(commandOpoints)
+    )
+    .addOption(
+        new Option(
+            '-I,--interval <intervalo>',
+            `Un solo intervalo de observación de : ${validIntervals()}`
         )
             .makeOptionMandatory(false)
             .argParser(commandOpoints)

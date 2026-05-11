@@ -17,21 +17,27 @@ export const validParamsHelp = async () => {
     const clearMyScreen = true;
     clearScreen();
     paramsHelp()
-    await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    const waitingMessage = '\n\Presione <Enter> para continuar o <q> para salir ...';
+
+    const extracted = async () => {
+        await wait(waitingMessage, clearMyScreen);
+    }
+
+    await extracted();
     dateTimeHelp1();
-    await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     dateTimeHelp2();
-    await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     dateTimeHelp3();
-    await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     dateTimeHelp4();
-    await wait('\n\Presione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     dateTimeHelp5();
-    await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     magnitudesHelp();
-    await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     opointsHelp();
-    await wait('\n\nPresione <Enter> para continuar o <q> para salir ...', clearMyScreen);
+    await extracted();
     intervalsHelp();
     process.exit(0)
 }
